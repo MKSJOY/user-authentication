@@ -4,7 +4,7 @@ import dotenv from "dotenv"
 import cookieParser from "cookie-parser"
 import { authRoutes } from "./routes/auth.js"
 import { companyRoutes } from "./routes/company.js"
-import { errorHandler } from "./middleware/errorHandler.js"
+import errorHandler from "./middleware/errorHandler.js"
 
 dotenv.config()
 
