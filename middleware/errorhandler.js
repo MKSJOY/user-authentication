@@ -1,15 +1,10 @@
-export const errorHandler = (err, req, res, next) => {
-    console.error(err.stack)
-  
-    const statusCode = err.statusCode || 500
-    const message = err.message || "Internal Server Error"
-  
-    res.status(statusCode).json({
-      error: {
-        message,
-        ...(process.env.NODE_ENV === "development" && { stack: err.stack }),
-      },
-    })
-  }
-  
-  
+// middleware/errorHandler.js
+const errorHandler = (err, req, res, next) => {
+  const statusCode = res.statusCode === 200 ? 500 : res.statusCode;
+  res.status(statusCode).json({
+      message: err.message || "Internal Server Error",
+      stack: process.env.NODE_ENV === "production" ? null : err.stack,
+  });
+};
+
+export default errorHandler;

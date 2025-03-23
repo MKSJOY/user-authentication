@@ -33,3 +33,21 @@ CREATE TABLE user_companies (
   UNIQUE KEY unique_user_company (user_id, company_id)
 );
 
+
+--projects table
+CREATE TABLE projects (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    project_name VARCHAR(255) NOT NULL,
+    location VARCHAR(255) NOT NULL,
+    contact_number VARCHAR(20),
+    project_start_date DATE,
+    approx_handover_date DATE,
+    project_code VARCHAR(50),
+    stage INT,
+    project_type INT,
+    status VARCHAR(50),
+    logo VARCHAR(255),
+    architect_drawing_file VARCHAR(255)
+);
+
+

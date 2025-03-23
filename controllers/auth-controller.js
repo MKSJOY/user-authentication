@@ -48,7 +48,7 @@ export const login = async (req, res) => {
     }
 
     const user = results[0]; // Get the user data from DB
-    console.log('Comparing password...');
+    //console.log('Comparing password...');
     const isMatch = await bcrypt.compare(password, user.password); // Compare password
     //console.log('Password match result:', isMatch);
 
@@ -57,7 +57,7 @@ export const login = async (req, res) => {
     }
 
     // Create JWT token
-    const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+    const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: '24h' });
     return res.status(200).json({ message: "Logged in successfully", token });
   } catch (err) {
     console.error('Login error:', err.stack);
