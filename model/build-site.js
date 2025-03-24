@@ -53,63 +53,62 @@ export default class Building {
     return query(sql);
   }
 
-  // Get a single building by project_name
-  static async getBuildingByProjectName(project_name) {
-    const sql = `
-      SELECT b.*, p.project_name 
-      FROM buildings b 
-      JOIN projects p ON b.project_name = p.project_name 
-      WHERE b.project_name = ?`;
 
-    return query(sql, [project_name]);
-  }
+  // Get a single building by id
+static async getBuildingById(id) {
+  const sql = `
+    SELECT b.*, p.project_name 
+    FROM buildings b 
+    JOIN projects p ON b.project_name = p.project_name 
+    WHERE b.id = ?`;
+  return query(sql, [id]);
+}
 
-  // Update a building by project_name
-  static async updateBuilding(project_name, data) {
-    const {
-      site_no,
-      avg_flat_size,
-      floor_area_size,
-      building_height,
-      flat_per_floor,
-      piling_type,
-      facing_type,
-      start_date,
-      handover_date,
-      stage,
-      status,
-      architect_file,
-    } = data;
+// Update a building by id
+static async updateBuilding(id, data) {
+  const {
+    site_no,
+    avg_flat_size,
+    floor_area_size,
+    building_height,
+    flat_per_floor,
+    piling_type,
+    facing_type,
+    start_date,
+    handover_date,
+    stage,
+    status,
+    architect_file,
+  } = data;
+  const sql = `
+    UPDATE buildings SET 
+    site_no=?, avg_flat_size=?, floor_area_size=?, building_height=?, 
+    flat_per_floor=?, piling_type=?, facing_type=?, start_date=?, 
+    handover_date=?, stage=?, status=?, architect_file=? 
+    WHERE id=?`;
+  return query(sql, [
+    site_no,
+    avg_flat_size,
+    floor_area_size,
+    building_height,
+    flat_per_floor,
+    piling_type,
+    facing_type,
+    start_date,
+    handover_date,
+    stage,
+    status,
+    architect_file,
+    id,
+  ]);
+}
 
-    const sql = `
-      UPDATE buildings SET 
-      site_no=?, avg_flat_size=?, floor_area_size=?, building_height=?, 
-      flat_per_floor=?, piling_type=?, facing_type=?, start_date=?, 
-      handover_date=?, stage=?, status=?, architect_file=? 
-      WHERE project_name=?`;
+// Delete a building by id
+static async deleteBuilding(id) {
+  const sql = `DELETE FROM buildings WHERE id = ?`;
+  return query(sql, [id]);
+}
 
-    return query(sql, [
-      site_no,
-      avg_flat_size,
-      floor_area_size,
-      building_height,
-      flat_per_floor,
-      piling_type,
-      facing_type,
-      start_date,
-      handover_date,
-      stage,
-      status,
-      architect_file,
-      project_name,
-    ]);
-  }
-
-  // Delete a building by project_name
-  static async deleteBuilding(project_name) {
-    const sql = `DELETE FROM buildings WHERE project_name = ?`;
-    return query(sql, [project_name]);
-  }
 
   // Get all project names for dropdown suggestion
   static async getProjectNames() {
