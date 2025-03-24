@@ -2,9 +2,7 @@ import { query } from "../config/database.js";
 import fs from "fs"; // For file deletion
 import { uploadMiddleware } from "../middlewares/uploadMiddleware.js";
 
-// Create a new project (with file uploads)
 
-// Create a new project (handles file uploads)
 export const createProject = async (req, res) => {
   // File upload middleware
   uploadMiddleware.fields([
@@ -36,6 +34,12 @@ export const createProject = async (req, res) => {
       // Ensure both files are provided
       if (!logo || !architect_drawing_file) {
         return res.status(400).json({ success: false, message: "Logo and architect drawing file are required." });
+      }
+
+      // Check for existing project with the same name
+      const existingProject = await query("SELECT * FROM projects WHERE project_name = ?", [project_name]);
+      if (existingProject.length > 0) {
+        return res.status(400).json({ success: false, message: "This is an existing project. Please enter a new project name." });
       }
 
       // SQL query to insert project data
@@ -136,6 +140,7 @@ export const updateProject = async (req, res) => {
     }
   );
 };
+
 
 // Delete a project
 export const deleteProject = async (req, res) => {

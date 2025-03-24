@@ -37,17 +37,42 @@ CREATE TABLE user_companies (
 --projects table
 CREATE TABLE projects (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    project_name VARCHAR(255) NOT NULL,
+    project_name VARCHAR(255) NOT NULL UNIQUE,
     location VARCHAR(255) NOT NULL,
-    contact_number VARCHAR(20),
-    project_start_date DATE,
-    approx_handover_date DATE,
-    project_code VARCHAR(50),
-    stage INT,
-    project_type INT,
-    status VARCHAR(50),
-    logo VARCHAR(255),
-    architect_drawing_file VARCHAR(255)
+    contact_number VARCHAR(20) NOT NULL,
+    project_start_date DATE NOT NULL,
+    approx_handover_date DATE NOT NULL,
+    project_code VARCHAR(50) NOT NULL,
+    stage INT NOT NULL,
+    project_type INT NOT NULL,
+    status VARCHAR(50) NOT NULL,
+    logo VARCHAR(255) NOT NULL,
+    architect_drawing_file VARCHAR(255) NOT NULL
 );
+
+
+--buildings table
+CREATE TABLE IF NOT EXISTS buildings (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    project_name VARCHAR(255) NOT NULL,
+    site_no VARCHAR(50) NOT NULL,
+    avg_flat_size FLOAT NOT NULL,
+    floor_area_size FLOAT NOT NULL,
+    building_height FLOAT NOT NULL,
+    flat_per_floor INT NOT NULL,
+    piling_type VARCHAR(50) NOT NULL,
+    facing_type VARCHAR(50) NOT NULL,
+    start_date DATE NOT NULL,
+    handover_date DATE NOT NULL,
+    stage VARCHAR(50) NOT NULL,
+    status VARCHAR(255) NOT NULL,
+    architect_file VARCHAR(255) NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    -- Foreign key reference to the projects table using project_name
+    CONSTRAINT fk_building_project FOREIGN KEY (project_name) REFERENCES projects(project_name) ON DELETE CASCADE
+)ENGINE=InnoDB;
+
+
 
 
