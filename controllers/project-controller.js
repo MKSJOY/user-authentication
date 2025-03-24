@@ -50,6 +50,7 @@ export const getProjectById = async (req, res) => {
   }
 };
 
+
 // Create a new project (handles file uploads)
 export const createProject = async (req, res) => {
   uploadMiddleware.fields([{ name: "logo", maxCount: 1 }, { name: "architect_drawing_file", maxCount: 1 }])(
@@ -80,6 +81,12 @@ export const createProject = async (req, res) => {
           return res.status(400).json({ success: false, message: "Logo and architect drawing file are required" });
         }
 
+        // Check if project name already exists
+        const existingProject = await query("SELECT * FROM projects WHERE project_name = ?", [project_name]);
+        if (existingProject.length > 0) {
+          return res.status(400).json({ success: false, message: "This is an existing project. Please enter a new project name." });
+        }
+
         const sql = `INSERT INTO projects 
           (project_name, location, contact_number, project_start_date, approx_handover_date, 
           project_code, stage, project_type, status, logo, architect_drawing_file) 
@@ -108,6 +115,7 @@ export const createProject = async (req, res) => {
     }
   );
 };
+
 
 // Update a project (handles file uploads)
 export const updateProject = async (req, res) => {

@@ -7,6 +7,7 @@ import { authRoutes } from "./routes/auth.js";
 import { projectRoutes } from "./routes/project.js";  // New project routes
 import errorHandler from "./middleware/errorHandler.js";  // Error handling middleware
 import { authMiddleware } from "./middleware/authMiddleware.js";  // Import the correct middleware
+import { buildRoutes } from "./routes/build-site.js"; // build-site routes
 
 dotenv.config();
 
@@ -27,6 +28,7 @@ app.use(cookieParser());
 app.use("/api/auth", authRoutes);  // Authentication routes (register/login)
 //app.use("/api/companies", companyRoutes);  // Company routes (if required)
 app.use("/api/project", authMiddleware, projectRoutes);  // Project routes (protected)
+app.use("/api/building", authMiddleware, buildRoutes);
 
 // Error handling middleware
 app.use(errorHandler);
