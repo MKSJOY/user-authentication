@@ -8,6 +8,8 @@ import { projectRoutes } from "./routes/project.js";  // New project routes
 import errorHandler from "./middleware/errorHandler.js";  // Error handling middleware
 import { authMiddleware } from "./middleware/authMiddleware.js";  // Import the correct middleware
 import { buildRoutes } from "./routes/build-site.js"; // build-site routes
+import { clientRoutes } from "./routes/register-client.js"; // client routes
+import { companyRoutes } from "./routes/company-userID.js"; // get companies by userID
 
 dotenv.config();
 
@@ -21,14 +23,18 @@ app.use(
     credentials: true,
   }),
 );
-app.use(express.json());
+
+app.use(express.json());// Middleware to parse JSON data
+app.use(express.urlencoded({ extended: true }));// Middleware to parse URL-encoded data (form data)
 app.use(cookieParser());
 
 // Routes
 app.use("/api/auth", authRoutes);  // Authentication routes (register/login)
 //app.use("/api/companies", companyRoutes);  // Company routes (if required)
 app.use("/api/project", authMiddleware, projectRoutes);  // Project routes (protected)
-app.use("/api/building", authMiddleware, buildRoutes);
+app.use("/api/building", authMiddleware, buildRoutes); // Building routes (protected)
+app.use("/api/client", authMiddleware, clientRoutes);
+app.use("/api/companies", authMiddleware, companyRoutes);
 
 // Error handling middleware
 app.use(errorHandler);

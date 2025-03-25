@@ -1,6 +1,13 @@
 import { query } from "../config/database.js";
 
 export default class Building {
+  // Check if project_name exists in the projects table
+  static async checkProjectNameExists(project_name) {
+    const sql = `SELECT id FROM projects WHERE project_name = ? LIMIT 1`;
+    const result = await query(sql, [project_name]);
+    return result.length > 0;  // Return true if project exists, else false
+  }
+
   // Create a new building
   static async createBuilding(data) {
     const {
@@ -18,6 +25,12 @@ export default class Building {
       status,
       architect_file,
     } = data;
+
+    // Check if project_name exists in the projects table
+    const projectExists = await this.checkProjectNameExists(project_name);
+    if (!projectExists) {
+      throw new Error("Project name does not exist in the projects table.");
+    }
 
     const sql = `
       INSERT INTO buildings 
@@ -43,30 +56,10 @@ export default class Building {
     ]);
   }
 
-  // Get all buildings
-  static async getAllBuildings() {
-    const sql = `
-      SELECT b.*, p.project_name 
-      FROM buildings b 
-      JOIN projects p ON b.project_name = p.project_name`;
-
-    return query(sql);
-  }
-
-  // Get a single building by project_name
-  static async getBuildingByProjectName(project_name) {
-    const sql = `
-      SELECT b.*, p.project_name 
-      FROM buildings b 
-      JOIN projects p ON b.project_name = p.project_name 
-      WHERE b.project_name = ?`;
-
-    return query(sql, [project_name]);
-  }
-
-  // Update a building by project_name
-  static async updateBuilding(project_name, data) {
+  // Update a building by id
+  static async updateBuilding(id, data) {
     const {
+      project_name,
       site_no,
       avg_flat_size,
       floor_area_size,
@@ -81,14 +74,21 @@ export default class Building {
       architect_file,
     } = data;
 
+    // Check if project_name exists in the projects table
+    const projectExists = await this.checkProjectNameExists(project_name);
+    if (!projectExists) {
+      throw new Error("Project name does not exist in the projects table.");
+    }
+
     const sql = `
       UPDATE buildings SET 
-      site_no=?, avg_flat_size=?, floor_area_size=?, building_height=?, 
+      project_name=?, site_no=?, avg_flat_size=?, floor_area_size=?, building_height=?, 
       flat_per_floor=?, piling_type=?, facing_type=?, start_date=?, 
       handover_date=?, stage=?, status=?, architect_file=? 
-      WHERE project_name=?`;
+      WHERE id=?`;
 
     return query(sql, [
+      project_name,
       site_no,
       avg_flat_size,
       floor_area_size,
@@ -101,14 +101,14 @@ export default class Building {
       stage,
       status,
       architect_file,
-      project_name,
+      id,
     ]);
   }
 
-  // Delete a building by project_name
-  static async deleteBuilding(project_name) {
-    const sql = `DELETE FROM buildings WHERE project_name = ?`;
-    return query(sql, [project_name]);
+  // Delete a building by id
+  static async deleteBuilding(id) {
+    const sql = `DELETE FROM buildings WHERE id = ?`;
+    return query(sql, [id]);
   }
 
   // Get all project names for dropdown suggestion

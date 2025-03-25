@@ -10,6 +10,14 @@ export const createBuilding = async (req, res) => {
     }
 
     try {
+      // Validate if project_name exists in the projects table
+      const projectNames = await Building.getProjectNames();
+      const existingProjectNames = projectNames.map(project => project.project_name);
+      
+      if (!existingProjectNames.includes(req.body.project_name)) {
+        return res.status(400).json({ success: false, message: "Project name does not exist in the projects table." });
+      }
+
       // Prepare data to ensure all required fields are either provided or set to null
       const data = {
         project_name: req.body.project_name || null,
@@ -36,34 +44,15 @@ export const createBuilding = async (req, res) => {
       await Building.createBuilding(data);
       res.status(201).json({ success: true, message: "Building created successfully!" });
     } catch (error) {
-      res.status(500).json({ success: false, message: "Error creating building", error });
+      if (error.message === "Project name does not exist in the projects table.") {
+        return res.status(400).json({ success: false, message: error.message });
+      }
+      res.status(500).json({ success: false, message: "Error creating building", error: error.message });
     }
   });
 };
 
-
-// Get all buildings
-export const getAllBuildings = async (req, res) => {
-  try {
-    const buildings = await Building.getAllBuildings();
-    res.status(200).json({ success: true, buildings });
-  } catch (error) {
-    res.status(500).json({ success: false, message: "Error fetching buildings", error });
-  }
-};
-
-// Get a building by project_name
-export const getBuildingByProjectName = async (req, res) => {
-  try {
-    const building = await Building.getBuildingByProjectName(req.params.project_name);
-    if (building.length === 0) return res.status(404).json({ success: false, message: "Building not found" });
-    res.status(200).json({ success: true, building: building[0] });
-  } catch (error) {
-    res.status(500).json({ success: false, message: "Error fetching building", error });
-  }
-};
-
-// Update a building by project_name
+// Update a building by id
 export const updateBuilding = async (req, res) => {
   uploadMiddleware.single("architect_file")(req, res, async (err) => {
     if (err) {
@@ -71,21 +60,33 @@ export const updateBuilding = async (req, res) => {
     }
 
     try {
-      await Building.updateBuilding(req.params.project_name, { ...req.body, architect_file: req.file?.path || null });
+      // Validate if project_name exists in the projects table before updating
+      const projectNames = await Building.getProjectNames();
+      const existingProjectNames = projectNames.map(project => project.project_name);
+
+      if (!existingProjectNames.includes(req.body.project_name)) {
+        return res.status(400).json({ success: false, message: "Project name does not exist in the projects table." });
+      }
+
+      // Update building by id instead of project_name
+      await Building.updateBuilding(req.params.id, { ...req.body, architect_file: req.file?.path || null });
       res.status(200).json({ success: true, message: "Building updated successfully!" });
     } catch (error) {
-      res.status(500).json({ success: false, message: "Error updating building", error });
+      if (error.message === "Project name does not exist in the projects table.") {
+        return res.status(400).json({ success: false, message: error.message });
+      }
+      res.status(500).json({ success: false, message: "Error updating building", error: error.message });
     }
   });
 };
 
-// Delete a building by project_name
+// Delete a building by id
 export const deleteBuilding = async (req, res) => {
   try {
-    const { project_name } = req.params;
+    const { id } = req.params;  // Use id instead of project_name
 
     // Fetch building data for file deletion
-    const building = await Building.getBuildingByProjectName(project_name);
+    const building = await Building.getBuildingById(id);  // Changed to use id
     if (building.length === 0) {
       return res.status(404).json({ success: false, message: "Building not found" });
     }
@@ -93,10 +94,31 @@ export const deleteBuilding = async (req, res) => {
     // Delete associated file
     if (building[0].architect_file) fs.unlinkSync(building[0].architect_file);
 
-    await Building.deleteBuilding(project_name);
+    await Building.deleteBuilding(id);  // Use id instead of project_name
     res.status(200).json({ success: true, message: "Building deleted successfully!" });
   } catch (error) {
-    res.status(500).json({ success: false, message: "Error deleting building", error });
+    res.status(500).json({ success: false, message: "Error deleting building", error: error.message });
+  }
+};
+
+// Get all buildings
+export const getAllBuildings = async (req, res) => {
+  try {
+    const buildings = await Building.getAllBuildings();
+    res.status(200).json({ success: true, buildings });
+  } catch (error) {
+    res.status(500).json({ success: false, message: "Error fetching buildings", error: error.message });
+  }
+};
+
+// Get a building by id
+export const getBuildingById = async (req, res) => {
+  try {
+    const building = await Building.getBuildingById(req.params.id);  // Changed to use id
+    if (building.length === 0) return res.status(404).json({ success: false, message: "Building not found" });
+    res.status(200).json({ success: true, building: building[0] });
+  } catch (error) {
+    res.status(500).json({ success: false, message: "Error fetching building", error: error.message });
   }
 };
 
@@ -106,6 +128,6 @@ export const getProjectNames = async (req, res) => {
     const projects = await Building.getProjectNames();
     res.status(200).json({ success: true, projects });
   } catch (error) {
-    res.status(500).json({ success: false, message: "Error fetching project names", error });
+    res.status(500).json({ success: false, message: "Error fetching project names", error: error.message });
   }
 };
