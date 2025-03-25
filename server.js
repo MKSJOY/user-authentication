@@ -10,6 +10,7 @@ import { authMiddleware } from "./middleware/authMiddleware.js";  // Import the 
 import { buildRoutes } from "./routes/build-site.js"; // build-site routes
 import { clientRoutes } from "./routes/register-client.js"; // client routes
 import { companyRoutes } from "./routes/company-userID.js"; // get companies by userID
+import { projectTypeRoutes } from "./routes/projectType.js";
 
 dotenv.config();
 
@@ -35,6 +36,8 @@ app.use("/api/project", authMiddleware, projectRoutes);  // Project routes (prot
 app.use("/api/building", authMiddleware, buildRoutes); // Building routes (protected)
 app.use("/api/client", authMiddleware, clientRoutes);
 app.use("/api/companies", authMiddleware, companyRoutes);
+
+app.use("/api/project-type", projectTypeRoutes); // Project type routes
 
 // Error handling middleware
 app.use(errorHandler);
