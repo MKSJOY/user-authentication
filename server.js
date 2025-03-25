@@ -3,11 +3,13 @@ import cors from "cors";
 import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
 import { authRoutes } from "./routes/auth.js";
-//import { companyRoutes } from "./routes/company.js";
 import { projectRoutes } from "./routes/project.js";  // New project routes
 import errorHandler from "./middleware/errorHandler.js";  // Error handling middleware
 import { authMiddleware } from "./middleware/authMiddleware.js";  // Import the correct middleware
 import { buildRoutes } from "./routes/build-site.js"; // build-site routes
+import { projectTypeRoutes } from "./routes/projectType.js";
+import stageRoutes from "./routes/stage-routes.js";
+
 
 dotenv.config();
 
@@ -27,8 +29,14 @@ app.use(cookieParser());
 // Routes
 app.use("/api/auth", authRoutes);  // Authentication routes (register/login)
 //app.use("/api/companies", companyRoutes);  // Company routes (if required)
-app.use("/api/project", authMiddleware, projectRoutes);  // Project routes (protected)
+app.use("/api/project", authMiddleware, projectRoutes);  // Project routes (protected) 
 app.use("/api/building", authMiddleware, buildRoutes);
+
+//project-type routes
+app.use("/api/project-types", authMiddleware, projectTypeRoutes);
+
+//stage routes
+app.use("/api/stages", authMiddleware, stageRoutes);
 
 // Error handling middleware
 app.use(errorHandler);
