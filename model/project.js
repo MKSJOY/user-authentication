@@ -119,15 +119,20 @@ export const updateProject = async (id, projectData) => {
 
 // Delete a project
 export const deleteProject = async (id) => {
-  const project = await query("SELECT logo, architect_drawing_file FROM projects WHERE id = ?", [id]);
-  if (project.length === 0) {
-    throw new Error("Project not found");
+  try {
+    // Fetch project to check if it exists
+    const project = await query("SELECT * FROM projects WHERE id = ?", [id]);
+    if (project.length === 0) {
+      throw new Error("Project not found");
+    }
+
+    // Delete project from DB
+    await query("DELETE FROM projects WHERE id = ?", [id]);
+
+    return { success: true, message: "Project deleted successfully" };
+  } catch (error) {
+    console.error("Error deleting project:", error);
+    return { success: false, message: "Internal Server Error" };
   }
-
-  // Delete associated files from disk if necessary (this is optional depending on your requirement)
-  if (project[0].logo) fs.unlinkSync(project[0].logo);
-  if (project[0].architect_drawing_file) fs.unlinkSync(project[0].architect_drawing_file);
-
-  // Delete project from DB
-  return await query("DELETE FROM projects WHERE id = ?", [id]);
 };
+
