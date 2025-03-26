@@ -1,9 +1,8 @@
 import { query } from "../config/database.js";
-import fs from "fs"; // For file deletion
 
 export default class Client {
   // Create a new client
-  static async createClient(data, files) {
+  static async createClient(data) {
     const {
       company_id, project_name, building_site, name, father_name, mother_name, date_of_birth, 
       marriage_anniversary_date, occupation, religion, nationality, phone_number, email, tin_number, 
@@ -12,13 +11,8 @@ export default class Client {
       present_address_2, permanent_village, permanent_post_code, permanent_police_station, 
       permanent_district, permanent_address_1, permanent_address_2, account_name, bank_name, 
       branch_name, ac_no, routing_no, bkash, nagad, rocket, dutch_bangla, share, flat_or_apartment, 
-      lottery_number,
+      lottery_number, national_id_file, passport_file, tin_file, photo_file,
     } = data;
-
-    const national_id_file = files?.national_id_file?.path || null;
-    const passport_file = files?.passport_file?.path || null;
-    const tin_file = files?.tin_file?.path || null;
-    const photo_file = files?.photo_file?.path || null;
 
     const values = [
       company_id, project_name, building_site, name, father_name, mother_name, date_of_birth, 
@@ -48,15 +42,15 @@ export default class Client {
   }
 
   // Update client
-  static async updateClient(id, data, files) {
+  static async updateClient(id, data) {
     const client = await Client.getClientById(id);
     if (client.length === 0) throw new Error("Client not found");
 
-    // Keep existing file paths if new files are not uploaded
-    const national_id_file = files?.national_id_file?.path || client[0].national_id_file;
-    const passport_file = files?.passport_file?.path || client[0].passport_file;
-    const tin_file = files?.tin_file?.path || client[0].tin_file;
-    const photo_file = files?.photo_file?.path || client[0].photo_file;
+    // Keep existing file paths if new ones are not provided
+    const national_id_file = data.national_id_file || client[0].national_id_file;
+    const passport_file = data.passport_file || client[0].passport_file;
+    const tin_file = data.tin_file || client[0].tin_file;
+    const photo_file = data.photo_file || client[0].photo_file;
 
     const sql = `
       UPDATE clients 
@@ -98,16 +92,6 @@ export default class Client {
   static async deleteClient(id) {
     const client = await Client.getClientById(id);
     if (client.length === 0) throw new Error("Client not found");
-
-    ['national_id_file', 'passport_file', 'tin_file', 'photo_file'].forEach(file => {
-      if (client[0][file]) {
-        try {
-          fs.unlinkSync(client[0][file]);
-        } catch (error) {
-          console.error(`Error deleting file: ${client[0][file]}`);
-        }
-      }
-    });
 
     const sql = `DELETE FROM clients WHERE id = ?`;
     return query(sql, [id]);
