@@ -105,6 +105,13 @@ export default class Building {
     ]);
   }
 
+  // Get all buildings
+  static async getAllBuildings() {
+  const sql = `SELECT * FROM buildings`;
+  return query(sql);
+  }
+
+
   // Delete a building by id
   static async deleteBuilding(id) {
     const sql = `DELETE FROM buildings WHERE id = ?`;
