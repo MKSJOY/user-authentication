@@ -39,26 +39,30 @@ export const login = async (req, res) => {
   }
 
   try {
-    //console.log('Fetching user from DB...');
     const results = await getUserByEmail(email); // Fetch the user from DB
-    //console.log('User fetched from DB:', results);
 
     if (results.length === 0) {
       return res.status(401).json({ message: "User not found" });
     }
 
     const user = results[0]; // Get the user data from DB
-    //console.log('Comparing password...');
     const isMatch = await bcrypt.compare(password, user.password); // Compare password
-    //console.log('Password match result:', isMatch);
 
     if (!isMatch) {
       return res.status(401).json({ message: "Invalid credentials" });
     }
 
-    // Create JWT token
-    const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: '24h' });
-    return res.status(200).json({ message: "Logged in successfully", token });
+    const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: '30d' });
+
+    // Return response with username, email, and token
+    return res.status(200).json({
+      message: "Logged in successfully",
+      token,
+      user: {
+        username: user.username,
+        email: user.email
+      }
+    });
   } catch (err) {
     console.error('Login error:', err.stack);
     return res.status(500).json({ error: 'Login error', err });
