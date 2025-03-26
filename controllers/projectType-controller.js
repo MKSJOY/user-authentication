@@ -1,4 +1,4 @@
-import { createProjectType, getAllProjectTypes, getProjectTypeById, deleteProjectType } from "../model/projectType.js";
+import { createProjectType, getAllProjectTypes, getProjectTypeById, updateProjectTypeById, deleteProjectType } from "../model/projectType.js";
 
 // Create a new project type
 export const addProjectType = async (req, res) => {
@@ -46,7 +46,7 @@ export const getProjectType = async (req, res) => {
 };
 
 // Update a project type
-export const updateProjectTypeController = async (req, res) => {
+export const updateProjectType = async (req, res) => {
   try {
     const { id } = req.params;
     const { type_name, code } = req.body;
@@ -55,13 +55,13 @@ export const updateProjectTypeController = async (req, res) => {
       return res.status(400).json({ success: false, message: "Type name and code are required" });
     }
 
-    const updatedProjectType = await updateProjectType(id, type_name, code);
+    const updated = await updateProjectTypeById(id, type_name, code);
 
-    if (!updatedProjectType) {
+    if (updated.affectedRows === 0) {
       return res.status(404).json({ success: false, message: "Project type not found" });
     }
 
-    res.json({ success: true, message: "Project type updated successfully", updatedProjectType });
+    res.json({ success: true, message: "Project type updated successfully" });
   } catch (error) {
     console.error("Error updating project type:", error);
     res.status(500).json({ success: false, message: "Internal Server Error" });

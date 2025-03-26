@@ -16,6 +16,12 @@ export const getProjectTypeById = async (id) => {
   return result.length ? result[0] : null;
 };
 
+// Update a project type by ID
+export const updateProjectTypeById = async (id, type_name, code) => {
+  return await query("UPDATE project_types SET type_name = ?, code = ? WHERE id = ?", [type_name, code, id]);
+};
+
+
 // Delete a project type
 export const deleteProjectType = async (id) => {
   return await query("DELETE FROM project_types WHERE id = ?", [id]);
