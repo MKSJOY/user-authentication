@@ -114,8 +114,8 @@ export default class Building {
   // Add method to get building by ID
   static async getBuildingById(id) {
     try {
-      const [rows] = await db.execute("SELECT * FROM buildings WHERE id = ?", [id]);
-      return rows;  // Return the result of the query
+      const sql = `SELECT * FROM buildings WHERE id = ?`;
+      return query(sql, [id]);  // Return the result of the query
     } catch (error) {
       throw new Error("Error fetching building by ID");
     }
