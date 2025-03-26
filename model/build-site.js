@@ -111,6 +111,16 @@ export default class Building {
   return query(sql);
   }
 
+  // Add method to get building by ID
+  static async getBuildingById(id) {
+    try {
+      const [rows] = await db.execute("SELECT * FROM buildings WHERE id = ?", [id]);
+      return rows;  // Return the result of the query
+    } catch (error) {
+      throw new Error("Error fetching building by ID");
+    }
+  }
+
 
   // Delete a building by id
   static async deleteBuilding(id) {
