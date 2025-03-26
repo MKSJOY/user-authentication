@@ -1,20 +1,27 @@
 import express from 'express';
-import uploadMiddleware from '../middleware/uploadMiddleware.js';
 import {
-  getAllProjects,
-  getProjectById,
-  createProject,
-  updateProject,
-  deleteProject,
+  getAllProjectsController,
+  getProjectByIdController,
+  createProjectController,
+  updateProjectController,
+  deleteProjectController,
 } from '../controllers/project-controller.js';
 
 const router = express.Router();
 
-// Use multerMiddleware to handle file uploads for the 'create' route
-router.post('/create', createProject);
-router.get('/all', getAllProjects);
-router.get('/get/:id', getProjectById);
-router.put('/update/:id', updateProject);
-router.delete('/delete/:id', deleteProject);
+// Create a new project (handles file paths as strings)
+router.post('/create', createProjectController);
+
+// Get all projects (supports filters & pagination)
+router.get('/all', getAllProjectsController);
+
+// Get a single project by ID
+router.get('/get/:id', getProjectByIdController);
+
+// Update a project (handles file paths as strings)
+router.put('/update/:id', updateProjectController);
+
+// Delete a project (also deletes associated files)
+router.delete('/delete/:id', deleteProjectController);
 
 export const projectRoutes = router;
