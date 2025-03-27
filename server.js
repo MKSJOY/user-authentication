@@ -11,6 +11,7 @@ import { clientRoutes } from "./routes/register-client.js";
 import { companyRoutes } from "./routes/company-userID.js";
 import { getBuildingRoutes } from "./routes/getBuildingsByProjectName.js";
 import { stageRoutes } from "./routes/stage-routes.js";
+import { plotRoutes } from "./routes/plot-routes.js";
 
 dotenv.config(); // Load .env variables at the top
 
@@ -48,6 +49,7 @@ app.use("/api/client", authMiddleware, clientRoutes);
 app.use("/api/companies", authMiddleware, companyRoutes);
 app.use("/api/buildings-project", authMiddleware, getBuildingRoutes);
 app.use("/api/stages", authMiddleware, stageRoutes);
+app.use("/api/plots", authMiddleware, plotRoutes);
 
 
 // Error handling middleware

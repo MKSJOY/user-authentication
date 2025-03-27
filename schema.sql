@@ -73,6 +73,19 @@ CREATE TABLE IF NOT EXISTS buildings (
     CONSTRAINT fk_building_project FOREIGN KEY (project_name) REFERENCES projects(project_name) ON DELETE CASCADE
 )ENGINE=InnoDB;
 
+--Plot tables
+
+CREATE TABLE plots (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    plot_name VARCHAR(255) NOT NULL,
+    plot_shape VARCHAR(50) NOT NULL,
+    plot_area DECIMAL(10,2) NOT NULL,
+    inventory_for_sale ENUM('Yes', 'No') NOT NULL,
+    note TEXT,
+    property_id VARCHAR(50) NOT NULL,
+    property_name VARCHAR(255) NOT NULL
+);
+
 
 
 
