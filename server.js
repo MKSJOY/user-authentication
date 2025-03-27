@@ -50,7 +50,7 @@ app.use("/api/client", authMiddleware, clientRoutes);
 app.use("/api/companies", authMiddleware, companyRoutes);
 app.use("/api/buildings-project", authMiddleware, getBuildingRoutes);
 app.use("/api/stages", authMiddleware, stageRoutes);
-app.use("/api/project-type", authMiddleware, projectTypeRoutes); // Project type routes
+app.use("/api/", authMiddleware, propertyRoutes);
 app.use("/api/project-type", authMiddleware, projectTypeRoutes); // Project type routes
 
 
