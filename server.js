@@ -12,6 +12,7 @@ import { companyRoutes } from "./routes/company-userID.js";
 import { getBuildingRoutes } from "./routes/getBuildingsByProjectName.js";
 import { stageRoutes } from "./routes/stage-routes.js";
 import { projectTypeRoutes } from "./routes/project-type.js";
+import { propertyRoutes } from "./routes/property.js"; // Import property routes
 
 dotenv.config(); // Load .env variables at the top
 
@@ -49,6 +50,7 @@ app.use("/api/client", authMiddleware, clientRoutes);
 app.use("/api/companies", authMiddleware, companyRoutes);
 app.use("/api/buildings-project", authMiddleware, getBuildingRoutes);
 app.use("/api/stages", authMiddleware, stageRoutes);
+app.use("/api/project-type", authMiddleware, projectTypeRoutes); // Project type routes
 app.use("/api/project-type", authMiddleware, projectTypeRoutes); // Project type routes
 
 
