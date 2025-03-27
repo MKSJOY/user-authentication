@@ -1,4 +1,4 @@
-import { createPlot, getAllPlots, getPlotById, updatePlot, deletePlot } from "../model/plot-model.js";
+import { createPlot, getAllPlots, getPlotById, updatePlot, deletePlot, getPlotsByPropertyId } from "../model/plot-model.js";
 
 // Create a new plot
 export const addPlot = async (req, res) => {
@@ -71,3 +71,23 @@ export const removePlot = async (req, res) => {
     res.status(500).json({ success: false, message: "Internal Server Error" });
   }
 };
+
+//import { getPlotsByPropertyId } from "../model/plot-model.js";
+
+// Get plots by property ID
+export const getPlotsByProperty = async (req, res) => {
+  try {
+    const { propertyId } = req.params;
+    const plots = await getPlotsByPropertyId(propertyId);
+
+    if (plots.length === 0) {
+      return res.status(404).json({ success: false, message: "No plots found for this property" });
+    }
+
+    res.json({ success: true, plots });
+  } catch (error) {
+    console.error("Error fetching plots by property ID:", error);
+    res.status(500).json({ success: false, message: "Internal Server Error" });
+  }
+};
+

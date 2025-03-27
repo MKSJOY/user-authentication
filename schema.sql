@@ -86,6 +86,17 @@ CREATE TABLE plots (
     property_name VARCHAR(255) NOT NULL
 );
 
-
+CREATE TABLE plots (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    plot_name VARCHAR(255) NOT NULL,
+    plot_shape VARCHAR(50) NOT NULL,
+    plot_area DECIMAL(10,2) NOT NULL,
+    inventory_for_sale ENUM('Yes', 'No') NOT NULL,
+    note TEXT,
+    property_id VARCHAR(100) NOT NULL,  -- This should match the data type of land_property_id
+    property_name VARCHAR(255) NOT NULL,
+    FOREIGN KEY (property_id) REFERENCES properties(land_property_id) ON DELETE CASCADE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
 
 

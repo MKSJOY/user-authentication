@@ -33,3 +33,9 @@ export const updatePlot = async (id, updatedData) => {
 export const deletePlot = async (id) => {
   return await query("DELETE FROM plots WHERE id = ?", [id]);
 };
+
+// Get plots by property ID
+export const getPlotsByPropertyId = async (propertyId) => {
+    return await query("SELECT * FROM plots WHERE property_id = ?", [propertyId]);
+  };
+  
