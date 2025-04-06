@@ -1,3 +1,4 @@
+import { query } from '../config/database.js';
 import { getUsersForCompany, createCompany } from '../model/company.js';
 
 export const handleGetUsersForCompany = async (req, res) => {
