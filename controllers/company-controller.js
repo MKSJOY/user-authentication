@@ -1,6 +1,6 @@
 import { getUsersForCompany } from '../model/company.js';
 
-const handleGetUsersForCompany = async (req, res) => {
+export const handleGetUsersForCompany = async (req, res) => {
   const { companyId } = req.params;
 
   try {
