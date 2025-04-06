@@ -1,5 +1,6 @@
 import mysql from "mysql2/promise";
 import dotenv from "dotenv";
+import fs from "fs"; // ✅ Required for reading the CA certificate
 
 dotenv.config();
 
@@ -9,8 +10,8 @@ const pool = mysql.createPool({
   password: process.env.DB_PASSWORD,
   database: process.env.DB_NAME,
   ssl: {
-    ca: fs.readFileSync(process.env.SSL_CA_PATH)
-  }
+    ca: fs.readFileSync(process.env.SSL_CA_PATH),
+  },
   waitForConnections: true,
   connectionLimit: 10,
   queueLimit: 0,
@@ -18,7 +19,7 @@ const pool = mysql.createPool({
 
 export const query = async (sql, params) => {
   try {
-    const [results] = await pool.execute(sql, params); // Executes the query using the pool
+    const [results] = await pool.execute(sql, params);
     return results;
   } catch (error) {
     console.error("Query error:", error);
