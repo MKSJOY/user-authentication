@@ -48,7 +48,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/project", authMiddleware, projectRoutes);
 app.use("/api/building", authMiddleware, buildRoutes);
 app.use("/api/client", authMiddleware, clientRoutes);
-app.use("/api/", authMiddleware, companyRoutes);
+app.use("/api/company", authMiddleware, companyRoutes);
 app.use("/api/buildings-project", authMiddleware, getBuildingRoutes);
 app.use("/api/stages", authMiddleware, stageRoutes);
 app.use("/api/", authMiddleware, propertyRoutes);
