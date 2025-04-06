@@ -21,6 +21,7 @@ export const getProjectById = async (id) => {
 // Create a new project
 export const createProject = async (projectData) => {
   const {
+    company_id,
     project_name,
     location,
     contact_number,
@@ -35,11 +36,12 @@ export const createProject = async (projectData) => {
   } = projectData;
 
   const sql = `INSERT INTO projects 
-    (project_name, location, contact_number, project_start_date, approx_handover_date, 
+    (company_id, project_name, location, contact_number, project_start_date, approx_handover_date, 
     project_code, stage, project_type, status, logo, architect_drawing_file) 
     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
 
   const params = [
+    company_id,
     project_name,
     location,
     contact_number,
@@ -59,6 +61,7 @@ export const createProject = async (projectData) => {
 // Update a project
 export const updateProject = async (id, projectData) => {
   const {
+    company_id,
     project_name,
     location,
     contact_number,
@@ -73,10 +76,11 @@ export const updateProject = async (id, projectData) => {
   } = projectData;
 
   let sql = `UPDATE projects SET 
-    project_name=?, location=?, contact_number=?, project_start_date=?, approx_handover_date=?, 
+    company_id=?, project_name=?, location=?, contact_number=?, project_start_date=?, approx_handover_date=?, 
     project_code=?, stage=?, project_type=?, status=?`;
 
   const params = [
+    company_id,
     project_name,
     location,
     contact_number,
