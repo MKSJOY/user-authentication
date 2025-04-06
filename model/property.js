@@ -4,6 +4,7 @@ import { query } from '../config/database.js';
 // Create Property
 export const createProperty = async (data) => {
   const {
+    company_id,
     land_property_name,
     land_property_id,
     upazila,
@@ -35,15 +36,15 @@ export const createProperty = async (data) => {
 
   const sql = `
     INSERT INTO properties 
-    (land_property_name, land_property_id, upazila, district, mouza_number, survey_category, khatian_number, 
+    (company_id, land_property_name, land_property_id, upazila, district, mouza_number, survey_category, khatian_number, 
     cs_khatian, rs_khatian, sa_khatian, bs_khatian, mutation_khatian, city_survey_khatian, survey_location, 
     additional_documents, owner_name, phone_number, present_address, nid, nid_file, owner_photo, 
     tin_number, tin_file, land_area, unit, note, reminder) 
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   `;
 
   const values = [
-    land_property_name, land_property_id, upazila, district, mouza_number,
+    company_id, land_property_name, land_property_id, upazila, district, mouza_number,
     survey_category, khatian_number, cs_khatian, rs_khatian, sa_khatian,
     bs_khatian, mutation_khatian, city_survey_khatian, survey_location,
     JSON.stringify(additional_documents || []), // Convert JSON array to string
@@ -98,6 +99,7 @@ export const getPropertyById = async (id) => {
 
 export const updateProperty = async (id, data) => {
   const {
+    company_id,
     land_property_name,
     land_property_id,
     upazila,
@@ -129,7 +131,7 @@ export const updateProperty = async (id, data) => {
 
   const sql = `
     UPDATE properties SET 
-      land_property_name = ?, land_property_id = ?, upazila = ?, district = ?, mouza_number = ?, 
+      company_id = ?, land_property_name = ?, land_property_id = ?, upazila = ?, district = ?, mouza_number = ?, 
       survey_category = ?, khatian_number = ?, cs_khatian = ?, rs_khatian = ?, sa_khatian = ?, 
       bs_khatian = ?, mutation_khatian = ?, city_survey_khatian = ?, survey_location = ?, 
       additional_documents = ?, owner_name = ?, phone_number = ?, present_address = ?, nid = ?, 
@@ -138,7 +140,7 @@ export const updateProperty = async (id, data) => {
   `;
 
   const values = [
-    land_property_name, land_property_id, upazila, district, mouza_number,
+    company_id, land_property_name, land_property_id, upazila, district, mouza_number,
     survey_category, khatian_number, cs_khatian, rs_khatian, sa_khatian,
     bs_khatian, mutation_khatian, city_survey_khatian, survey_location,
     JSON.stringify(additional_documents || []),  // Convert JSON array to string
