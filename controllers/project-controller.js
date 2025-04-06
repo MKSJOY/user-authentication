@@ -34,7 +34,7 @@ export const getProjectByIdController = async (req, res) => {
 export const createProjectController = async (req, res) => {
   try {
     const { 
-      project_name, location, contact_number, project_start_date, 
+      company_id, project_name, location, contact_number, project_start_date, 
       approx_handover_date, project_code, stage, project_type, status, 
       logo, architect_drawing_file 
     } = req.body;
