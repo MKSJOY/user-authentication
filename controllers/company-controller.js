@@ -1,4 +1,4 @@
-import { getUsersForCompany } from '../models/company.js';
+import { getUsersForCompany } from '../model/company.js';
 
 const handleGetUsersForCompany = async (req, res) => {
   const { companyId } = req.params;
