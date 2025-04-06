@@ -99,11 +99,7 @@ export default class Client {
 
   // Get all clients
   static async getAllClients() {
-    const sql = `
-      SELECT c.*, comp.name AS company_name 
-      FROM clients c 
-      JOIN companies comp ON c.company_id = comp.id;
-    `;
+    const sql = `SELECT * FROM clients;`;
     return query(sql);
   }
 
