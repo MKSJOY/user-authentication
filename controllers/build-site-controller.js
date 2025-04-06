@@ -13,6 +13,7 @@ export const createBuilding = async (req, res) => {
 
     // Prepare data to ensure all required fields are either provided or set to null
     const data = {
+      company_id: req.body.company_id || null,
       project_name: req.body.project_name || null,
       site_no: req.body.site_no || null,
       avg_flat_size: req.body.avg_flat_size || null,
