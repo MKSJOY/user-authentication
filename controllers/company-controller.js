@@ -14,7 +14,7 @@ export const handleGetUsersForCompany = async (req, res) => {
 
 export const createCompanyController = async (req, res) => {
   try {
-    const { user_id, name, industry, size, website } = req.body;
+    const { user_id, name, industry, size, website, address} = req.body;
 
     // Ensure required data is present
     if (!user_id || !name || !industry || !size || !website || !address) {
