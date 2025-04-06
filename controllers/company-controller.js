@@ -17,13 +17,13 @@ export const createCompanyController = async (req, res) => {
     const { user_id, username, industry, size, website } = req.body;
 
     // Ensure required data is present
-    if (!user_id || !username || !industry || !size || !website) {
+    if (!user_id || !username || !industry || !size || !website || !address) {
       return res.status(400).json({ success: false, message: 'All fields are required' });
     }
 
     // Insert the new company
-    const companySql = "INSERT INTO companies (username, industry, size, website, created_by) VALUES (?, ?, ?, ?, ?)";
-    const companyParams = [username, industry, size, website, user_id];
+    const companySql = "INSERT INTO companies (username, industry, size, website, address, created_by) VALUES (?, ?, ?, ?, ?, ?)";
+    const companyParams = [username, industry, size, website, address, user_id];
     const companyResult = await query(companySql, companyParams);
 
     // Now associate the company with the user in user_companies table
