@@ -11,6 +11,7 @@ export default class Building {
   // Create a new building
   static async createBuilding(data) {
     const {
+      company_id,
       project_name,
       site_no,
       avg_flat_size,
@@ -34,12 +35,13 @@ export default class Building {
 
     const sql = `
       INSERT INTO buildings 
-      (project_name, site_no, avg_flat_size, floor_area_size, building_height, 
+      (company_id, project_name, site_no, avg_flat_size, floor_area_size, building_height, 
        flat_per_floor, piling_type, facing_type, start_date, handover_date, 
        stage, status, architect_file) 
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
 
     return query(sql, [
+      company_id,
       project_name,
       site_no,
       avg_flat_size,
@@ -59,6 +61,7 @@ export default class Building {
   // Update a building by id
   static async updateBuilding(id, data) {
     const {
+      company_id,
       project_name,
       site_no,
       avg_flat_size,
@@ -82,12 +85,13 @@ export default class Building {
 
     const sql = `
       UPDATE buildings SET 
-      project_name=?, site_no=?, avg_flat_size=?, floor_area_size=?, building_height=?, 
+      company_id=?, project_name=?, site_no=?, avg_flat_size=?, floor_area_size=?, building_height=?, 
       flat_per_floor=?, piling_type=?, facing_type=?, start_date=?, 
       handover_date=?, stage=?, status=?, architect_file=? 
       WHERE id=?`;
 
     return query(sql, [
+      company_id,
       project_name,
       site_no,
       avg_flat_size,
