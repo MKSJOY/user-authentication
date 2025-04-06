@@ -101,3 +101,10 @@ export const deleteProjectController = async (req, res) => {
     res.status(500).json({ success: false, message: "Internal Server Error" });
   }
 };
+
+
+// Utility function to check if the date is in correct format
+const isValidDate = (date) => {
+  const regex = /^\d{4}-\d{2}-\d{2}$/;
+  return regex.test(date);
+};
