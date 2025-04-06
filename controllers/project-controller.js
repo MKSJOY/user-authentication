@@ -39,21 +39,29 @@ export const createProjectController = async (req, res) => {
       logo, architect_drawing_file 
     } = req.body;
 
-    if (!logo || !architect_drawing_file) {
-      return res.status(400).json({ success: false, message: "Logo and architect drawing file paths are required" });
+    // Check if all required fields are present
+    if (!company_id || !project_name || !location || !contact_number || !project_start_date || 
+        !approx_handover_date || !project_code || !stage || !project_type || !status || !logo || !architect_drawing_file) {
+      return res.status(400).json({ success: false, message: "All fields are required" });
+    }
+
+    // Validate date formats (yyyy-mm-dd)
+    if (!isValidDate(project_start_date) || !isValidDate(approx_handover_date)) {
+      return res.status(400).json({ success: false, message: "Invalid date format" });
     }
 
     // Check if project name already exists
     const existingProject = await getProjectById(project_name);
     if (existingProject) {
-      return res.status(400).json({ success: false, message: "This is an existing project. Please enter a new project name." });
+      return res.status(400).json({ success: false, message: "This project already exists" });
     }
 
-    await createProject(req.body); // Pass the entire request body to create the project
+    // Create new project
+    await createProject(req.body);
     res.status(201).json({ success: true, message: "Project created successfully" });
   } catch (error) {
     console.error("Error creating project:", error);
-    res.status(500).json({ success: false, message: "Internal Server Error" });
+    res.status(500).json({ success: false, message: "Internal Server Error", error: error.message });
   }
 };
 
