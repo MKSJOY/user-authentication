@@ -1,9 +1,12 @@
 import express from 'express';
-import { handleGetUsersForCompany } from '../controllers/company-controller.js';
+import { handleGetUsersForCompany, createCompanyController } from '../controllers/company-controller.js';
 
 const router = express.Router();
 
 // Route to get all users for a company
-router.get('/company/:companyId', handleGetUsersForCompany);
+router.get('/:companyId', handleGetUsersForCompany);
+
+// Route for creating a new company after user registration
+router.post('/create', createCompanyController);
 
 export const companyRoutes = router;
