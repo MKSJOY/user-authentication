@@ -63,6 +63,11 @@ export const createProjectController = async (req, res) => {
     console.error("Error creating project:", error);
     res.status(500).json({ success: false, message: "Internal Server Error", error: error.message });
   }
+
+  // Utility function to check if the date is in correct format
+const isValidDate = (date) => {
+  const regex = /^\d{4}-\d{2}-\d{2}$/;
+  return regex.test(date);
 };
 
 // Update a project (handles file paths as strings)
@@ -102,9 +107,3 @@ export const deleteProjectController = async (req, res) => {
   }
 };
 
-
-// Utility function to check if the date is in correct format
-const isValidDate = (date) => {
-  const regex = /^\d{4}-\d{2}-\d{2}$/;
-  return regex.test(date);
-};
