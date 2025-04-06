@@ -1,29 +1,16 @@
 import { query } from "../config/database.js";
 
 // Get all projects
-export const getAllProjects = async (filters) => {
-  const { status, start_date, handover_date, page = 1, limit = 10 } = filters;
-  let sql = "SELECT * FROM projects WHERE 1=1";
-  const params = [];
-
-  if (status) {
-    sql += " AND status = ?";
-    params.push(status);
+export const getAllProjects = async () => {
+  const sql = "SELECT * FROM projects";
+  try {
+    return await query(sql);
+  } catch (error) {
+    console.error("Error fetching projects:", error);
+    throw new Error("Failed to retrieve projects");
   }
-  if (start_date) {
-    sql += " AND project_start_date >= ?";
-    params.push(start_date);
-  }
-  if (handover_date) {
-    sql += " AND approx_handover_date <= ?";
-    params.push(handover_date);
-  }
-
-  sql += " LIMIT ? OFFSET ?";
-  params.push(parseInt(limit), (parseInt(page) - 1) * parseInt(limit));
-
-  return await query(sql, params);
 };
+
 
 // Get a single project by ID
 export const getProjectById = async (id) => {
