@@ -84,3 +84,16 @@ export const deleteStage = async (req, res) => {
     res.status(500).json({ success: false, message: "Error deleting stage.", error: error.message });
   }
 };
+
+// ✅ Get all stages (across all buildings)
+export const getAllStages = async (req, res) => {
+  try {
+    const sql = `SELECT * FROM stages`;
+    const stages = await query(sql);
+
+    res.status(200).json({ success: true, stages });
+  } catch (error) {
+    console.error("Error retrieving all stages:", error);
+    res.status(500).json({ success: false, message: "Error retrieving all stages.", error: error.message });
+  }
+};
