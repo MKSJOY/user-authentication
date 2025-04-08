@@ -8,5 +8,6 @@ router.post("/add", authMiddleware, addStage); // Add a new stage
 router.get("/:building_id", authMiddleware, getStagesByBuilding); // Get all stages for a building
 router.put("/:stage_id", authMiddleware, updateStage); // Update a stage
 router.delete("/:stage_id", authMiddleware, deleteStage); // Delete a stage
+router.get("/stages", authMiddleware, getAllStages);
 
 export const stageRoutes = router;
