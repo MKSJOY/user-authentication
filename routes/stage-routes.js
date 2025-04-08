@@ -1,5 +1,5 @@
 import express from "express";
-import { addStage, getStagesByBuilding, updateStage, deleteStage } from "../controllers/stage-controller.js";
+import { addStage, getStagesByBuilding, updateStage, deleteStage, getAllStages } from "../controllers/stage-controller.js";
 import { authMiddleware } from "../middleware/authMiddleware.js";
 
 const router = express.Router();
