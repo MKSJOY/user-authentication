@@ -88,7 +88,7 @@ export const deleteStage = async (req, res) => {
 // ✅ Get all stages (across all buildings)
 export const getAllStages = async (req, res) => {
   try {
-    const sql = `SELECT * FROM stages`;
+    const sql = `SELECT * FROM stages ORDER BY stage_date ASC`;
     const stages = await query(sql);
 
     res.status(200).json({ success: true, stages });
