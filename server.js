@@ -14,6 +14,7 @@ import { stageRoutes } from "./routes/stage-routes.js";
 import { projectTypeRoutes } from "./routes/project-type.js";
 import { propertyRoutes } from "./routes/property.js"; // Import property routes
 import { plotRoutes } from "./routes/plot-routes.js";
+import { companyUserRoutes } from "./routes/company-userID.js";
 
 dotenv.config(); // Load .env variables at the top
 
@@ -48,6 +49,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/project", authMiddleware, projectRoutes);
 app.use("/api/building", authMiddleware, buildRoutes);
 app.use("/api/client", authMiddleware, clientRoutes);
+app.use("/api/company", authMiddleware, companyUserRoutes);
 app.use("/api/company", authMiddleware, companyRoutes);
 app.use("/api/buildings-project", authMiddleware, getBuildingRoutes);
 app.use("/api/stages", authMiddleware, stageRoutes);
