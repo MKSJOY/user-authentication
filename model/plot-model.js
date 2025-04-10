@@ -25,7 +25,7 @@ export const updatePlot = async (id, updatedData) => {
   const { company_id, plot_name, plot_shape, plot_area, inventory_for_sale, note, property_id, property_name } = updatedData;
   return await query(
     "UPDATE plots SET company_id = ?, plot_name = ?, plot_shape = ?, plot_area = ?, inventory_for_sale = ?, note = ?, property_id = ?, property_name = ? WHERE id = ?",
-    [plot_name, plot_shape, plot_area, inventory_for_sale, note, property_id, property_name, id]
+    [company_id, plot_name, plot_shape, plot_area, inventory_for_sale, note, property_id, property_name, id]
   );
 };
 
