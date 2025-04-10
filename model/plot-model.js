@@ -4,7 +4,7 @@ import { query } from "../config/database.js";
 export const createPlot = async (plotData) => {
   const { company_id, plot_name, plot_shape, plot_area, inventory_for_sale, note, property_id, property_name } = plotData;
   return await query(
-    "INSERT INTO plots (company_id, plot_name, plot_shape, plot_area, inventory_for_sale, note, property_id, property_name) VALUES (?, ?, ?, ?, ?, ?, ?)",
+    "INSERT INTO plots (company_id, plot_name, plot_shape, plot_area, inventory_for_sale, note, property_id, property_name) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
     [plot_name, plot_shape, plot_area, inventory_for_sale, note, property_id, property_name]
   );
 };
