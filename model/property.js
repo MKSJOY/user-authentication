@@ -154,25 +154,27 @@ export const updateProperty = async (id, data) => {
     company_id, land_property_name, land_property_id, upazila, district, mouza_number,
     survey_category, khatian_number, cs_khatian, rs_khatian, sa_khatian,
     bs_khatian, mutation_khatian, city_survey_khatian, survey_location,
-    JSON.stringify(additional_documents || []),  // Convert JSON array to string
+    JSON.stringify(additional_documents || []),
     owner_name, phone_number, present_address, nid, nid_file,
     owner_photo, tin_number, tin_file, land_area, unit, note, reminder, id
   ];
 
   try {
-    const updateResult = await query(sql, values); // Execute the update query
+    const updateResult = await query(sql, values);
 
     if (updateResult.affectedRows === 0) {
       return { status: 404, message: 'Property not found or not updated' };
     }
 
-    // Fetch the updated property
     const [updatedProperty] = await query(`SELECT * FROM properties WHERE id = ?`, [id]);
+
+    // ✅ Parse the JSON field before returning
+    updatedProperty.additional_documents = JSON.parse(updatedProperty.additional_documents || '[]');
 
     return {
       status: 200,
       message: 'Updated successfully',
-      updatedProperty
+      property: updatedProperty
     };
   } catch (err) {
     console.error('Error updating property:', err);
