@@ -54,12 +54,12 @@ export const createProperty = async (data) => {
 
   try {
     const result = await query(sql, values); // Execute the query
-    const insertedId = result.insertId;
+    //const insertedId = result.insertId;
    return {
       status: 200,
       message: 'Added successfully',
       property: {
-        id: insertedId,
+        id,
         company_id,
         land_property_name,
         land_property_id,
