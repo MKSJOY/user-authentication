@@ -49,7 +49,7 @@ export const updateProperties = async (req, res) => {
 
         const updatedProperty = await getPropertyById(req.params.id); // Fetch the updated property
 
-        return res.status(200).json({ success: true, message: "Updated successfully" /*, property: updatedProperty*/ });
+        return res.status(200).json({ success: true, message: "Updated successfully" , property: updatedProperty });
     } catch (error) {
         return res.status(500).json({ success: false, error: error.message });
     }
