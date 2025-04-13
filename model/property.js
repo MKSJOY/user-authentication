@@ -52,14 +52,20 @@ export const createProperty = async (data) => {
     owner_photo, tin_number, tin_file, land_area, unit, note, reminder
   ];
 
-  try {
-    const result = await query(sql, values); // Execute the query
-    //const insertedId = result.insertId;
-   return {
+ try {
+    await query(sql, values); // Insert the record
+
+    // 👇 Fetch the inserted record using land_property_id
+    const [newProperty] = await query(`SELECT * FROM properties WHERE land_property_id = ?`, [land_property_id]);
+
+    // Parse JSON field if needed
+    newProperty.additional_documents = JSON.parse(newProperty.additional_documents || '[]');
+
+    return {
       status: 200,
       message: 'Added successfully',
-      result
-   };
+      property: newProperty
+    };
   } catch (err) {
     console.error('Error creating property:', err); // Log the error for debugging
     return { status: 500, message: 'Internal Server Error', error: err.message }; // Propagate the error
