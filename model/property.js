@@ -53,8 +53,43 @@ export const createProperty = async (data) => {
   ];
 
   try {
-    await query(sql, values); // Execute the query
-    return { status: 200, message: 'Added successfully' }; // Return only success message
+    const result = await query(sql, values); // Execute the query
+    const insertedId = result.insertId;
+   return {
+      status: 200,
+      message: 'Added successfully',
+      property: {
+        id: insertedId,
+        company_id,
+        land_property_name,
+        land_property_id,
+        upazila,
+        district,
+        mouza_number,
+        survey_category,
+        khatian_number,
+        cs_khatian,
+        rs_khatian,
+        sa_khatian,
+        bs_khatian,
+        mutation_khatian,
+        city_survey_khatian,
+        survey_location,
+        additional_documents: additional_documents || [],
+        owner_name,
+        phone_number,
+        present_address,
+        nid,
+        nid_file,
+        owner_photo,
+        tin_number,
+        tin_file,
+        land_area,
+        unit,
+        note,
+        reminder
+      }
+    };
   } catch (err) {
     console.error('Error creating property:', err); // Log the error for debugging
     return { status: 500, message: 'Internal Server Error', error: err.message }; // Propagate the error
