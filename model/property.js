@@ -58,7 +58,8 @@ export const createProperty = async (data) => {
    return {
       status: 200,
       message: 'Added successfully',
-      return await query(sql, values);
+      result
+   };
   } catch (err) {
     console.error('Error creating property:', err); // Log the error for debugging
     return { status: 500, message: 'Internal Server Error', error: err.message }; // Propagate the error
