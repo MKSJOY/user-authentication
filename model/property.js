@@ -173,8 +173,8 @@ export const updateProperty = async (id, data) => {
 
     return {
       status: 200,
-      message: 'Updated successfully',
-      property: updatedProperty
+      message: 'Updated successfully'
+      //property: updatedProperty
     };
   } catch (err) {
     console.error('Error updating property:', err);
