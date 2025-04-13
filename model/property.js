@@ -173,7 +173,7 @@ export const updateProperty = async (id, data) => {
 
     return {
       status: 200,
-      message: 'Updated successfully'
+      message: 'Updated successfully',
       property: updatedProperty
     };
   } catch (err) {
