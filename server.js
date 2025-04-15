@@ -15,6 +15,8 @@ import { projectTypeRoutes } from "./routes/project-type.js";
 import { propertyRoutes } from "./routes/property.js"; // Import property routes
 import { plotRoutes } from "./routes/plot-routes.js";
 import { companyUserRoutes } from "./routes/company-userID.js";
+import { saleFlatRoutes } from "./routes/create_sale_order_flat.js";
+import { saleLandRoutes } from "./routes/create_sale_order_land.js";
 //import { expenseRoutes } from "./routes/expense.js";
 
 dotenv.config(); // Load .env variables at the top
@@ -57,6 +59,8 @@ app.use("/api/stages", authMiddleware, stageRoutes);
 app.use("/api/", authMiddleware, propertyRoutes);
 app.use("/api/project-type", authMiddleware, projectTypeRoutes); // Project type routes
 app.use("/api/plots", authMiddleware, plotRoutes);
+app.use("/api/sale-order/flat", authMiddleware, saleFlatRoutes);
+app.use("/api/sale-order/land", authMiddleware, saleLandRoutes);
 //app.use("/api/expenses", authMiddleware, expenseRoutes);
 
 // Error handling middleware
