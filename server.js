@@ -17,6 +17,7 @@ import { plotRoutes } from "./routes/plot-routes.js";
 import { companyUserRoutes } from "./routes/company-userID.js";
 import { saleFlatRoutes } from "./routes/create_sale_order_flat.js";
 import { saleLandRoutes } from "./routes/create_sale_order_land.js";
+import { addScrapProduct } from "./routes/add_scrap_product.js";
 //import { expenseRoutes } from "./routes/expense.js";
 
 dotenv.config(); // Load .env variables at the top
@@ -61,6 +62,7 @@ app.use("/api/project-type", authMiddleware, projectTypeRoutes); // Project type
 app.use("/api/plots", authMiddleware, plotRoutes);
 app.use("/api/sale-order/flat", authMiddleware, saleFlatRoutes);
 app.use("/api/sale-order/land", authMiddleware, saleLandRoutes);
+app.use("/api/add-scrap/product", authMiddleware, addScrapProduct);
 //app.use("/api/expenses", authMiddleware, expenseRoutes);
 
 // Error handling middleware
