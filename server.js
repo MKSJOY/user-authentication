@@ -16,6 +16,8 @@ import { propertyRoutes } from "./routes/property.js"; // Import property routes
 import { plotRoutes } from "./routes/plot-routes.js";
 import { companyUserRoutes } from "./routes/company-userID.js";
 import { expenseRoutes } from "./routes/expense.js";
+import { receiptVoucherRoutes } from "./routes/receipt-voucher.js";
+
 
 dotenv.config(); // Load .env variables at the top
 
@@ -58,6 +60,8 @@ app.use("/api/", authMiddleware, propertyRoutes);
 app.use("/api/project-type", authMiddleware, projectTypeRoutes); // Project type routes
 app.use("/api/plots", authMiddleware, plotRoutes);
 app.use("/api/expenses", authMiddleware, expenseRoutes); // Expense 
+app.use("/api/receipt-voucher", authMiddleware, receiptVoucherRoutes); //receipt-voucher
+
 
 // Error handling middleware
 app.use(errorHandler);

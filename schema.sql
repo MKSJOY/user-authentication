@@ -74,5 +74,36 @@ CREATE TABLE IF NOT EXISTS buildings (
 )ENGINE=InnoDB;
 
 
+-- ReceiptVoucher --
+CREATE TABLE receipt_vouchers (
+    id CHAR(36) PRIMARY KEY DEFAULT (UUID()),
+    voucher_number VARCHAR(50),
+    date DATE,
+    due_amount DECIMAL(12, 2),
+    pay_amount DECIMAL(12, 2),
+    amount_paid_by VARCHAR(255),
+    payment_type VARCHAR(50),
+    remaining_due DECIMAL(12, 2),
+    product_name VARCHAR(255),
+    product_details TEXT,
+    supplier_id CHAR(36),
+    upload_file_path VARCHAR(255),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (supplier_id) REFERENCES clients(id)
+);
+CREATE TABLE payment_schedules (
+    id CHAR(36) PRIMARY KEY DEFAULT (UUID()),
+    receipt_voucher_id CHAR(36),
+    installment_no INT,
+    installment_amount DECIMAL(12, 2),
+    due_date DATE,
+    amount DECIMAL(12, 2),
+    money_receipt_no VARCHAR(50),
+    received_amount DECIMAL(12, 2),
+    FOREIGN KEY (receipt_voucher_id) REFERENCES receipt_vouchers(id)
+        ON DELETE CASCADE
+);
+
 
 
