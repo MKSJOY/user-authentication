@@ -1,12 +1,21 @@
 import Client from "../model/register-client.js";
 
-// Create a new client without file upload handling
+// Create a new client with single or multiple nominees
 export const createClient = async (req, res) => {
   try {
     const data = req.body;
 
     if (!data.project_name) {
       return res.status(400).json({ success: false, message: "Project name is required" });
+    }
+
+    // Handle nominee as a single object or array
+    const { nominees } = data;
+    if (nominees) {
+      // If nominees is a single nominee object, make it an array
+      if (!Array.isArray(nominees)) {
+        data.nominees = [nominees];
+      }
     }
 
     await Client.createClient(data);
@@ -17,7 +26,7 @@ export const createClient = async (req, res) => {
   }
 };
 
-// Get all clients
+// Get all clients along with their nominees
 export const getAllClients = async (req, res) => {
   try {
     const clients = await Client.getAllClients();
@@ -27,7 +36,7 @@ export const getAllClients = async (req, res) => {
   }
 };
 
-// Get client by ID
+// Get client by ID along with their nominees
 export const getClientById = async (req, res) => {
   try {
     const clientId = req.params.id;
@@ -42,7 +51,7 @@ export const getClientById = async (req, res) => {
   }
 };
 
-// Update an existing client by ID without file upload handling
+// Update an existing client by ID (without file upload handling)
 export const updateClient = async (req, res) => {
   try {
     const clientId = req.params.id;
@@ -61,7 +70,7 @@ export const updateClient = async (req, res) => {
   }
 };
 
-// Delete a client by ID
+// Delete a client by ID and their nominees
 export const deleteClient = async (req, res) => {
   try {
     const clientId = req.params.id;
