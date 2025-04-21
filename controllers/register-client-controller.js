@@ -1,27 +1,33 @@
 import Client from "../model/register-client.js";
 
-// Create a new client with single or multiple nominees
+// Create a new client with single or multiple nominee
 export const createClient = async (req, res) => {
   try {
-    const data = req.body;
+    const data = req.body; // Assuming client data is sent in the body
+    const response = await Client.createClient(data);
 
-    if (!data.project_name) {
-      return res.status(400).json({ success: false, message: "Project name is required" });
+    if (response.success) {
+      res.status(201).json({
+        success: true,
+        message: "Client and nominees registered successfully",
+      });
+    } else {
+      res.status(400).json({
+        success: false,
+        message: "Error registering client or nominees",
+        error: response.error,
+      });
     }
-
-    // Handle nominee as a single object or array
-    const { nominees } = data;
-    if (nominees && !Array.isArray(nominees)) {
-      data.nominees = [nominees];
-    }
-
-    await Client.createClient(data);
-
-    res.status(201).json({ success: true, message: "Client registered successfully!" });
   } catch (error) {
-    res.status(500).json({ success: false, message: "Error registering client", error: error.message });
+    console.error("Error in client creation:", error); // Log the error for debugging
+    res.status(500).json({
+      success: false,
+      message: "Error registering client or nominees",
+      error: error.message,
+    });
   }
 };
+
 
 // ✅ Get all clients grouped with nominees
 export const getAllClients = async (req, res) => {
