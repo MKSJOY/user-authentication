@@ -1,4 +1,6 @@
-import { query } from "../config/database.js";
+import { query, } from "../config/database.js";
+import { pool } from "../config/database.js";
+
 
 // Get all projects
 export const getAllProjects = async () => {
@@ -124,6 +126,24 @@ export const deleteProject = async (id) => {
   } catch (error) {
     console.error("Error deleting project:", error);
     return { success: false, message: "Internal Server Error" };
+  }
+};
+
+// //Project Summary Dashboard 
+
+export const getProjectSummary = async () => {
+  try {
+    const [rows] = await pool.query(`
+      SELECT 
+        COUNT(*) AS total,
+        SUM(CASE WHEN status = 'Completed' THEN 1 ELSE 0 END) AS completed,
+        SUM(CASE WHEN status = 'Active' THEN 1 ELSE 0 END) AS active,
+        SUM(CASE WHEN status = 'Inactive' THEN 1 ELSE 0 END) AS inactive
+      FROM projects
+    `);
+    return rows[0];
+  } catch (error) {
+    throw new Error("Failed to fetch project summary: " + error.message);
   }
 };
 

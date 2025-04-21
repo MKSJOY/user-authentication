@@ -5,7 +5,8 @@ import {
   getPropertiesById,
   updateProperties,
   deleteProperties,
-} from "../controllers/property-controller.js";
+  totalPropertyCount,
+} from "../controllers/property-controller.js";  // <-- Correct import path
 
 const router = express.Router();
 
@@ -23,5 +24,8 @@ router.put("/properties/:id", updateProperties);
 
 // Delete Property
 router.delete("/properties/:id", deleteProperties);
+
+// Property Summary Dashboard
+router.get('/count', totalPropertyCount); // ✅ route for total count
 
 export const propertyRoutes = router;

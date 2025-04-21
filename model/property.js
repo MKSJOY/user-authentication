@@ -52,9 +52,20 @@ export const createProperty = async (data) => {
     owner_photo, tin_number, tin_file, land_area, unit, note, reminder
   ];
 
-  try {
-    await query(sql, values); // Execute the query
-    return { status: 200, message: 'Added successfully' }; // Return only success message
+ try {
+    await query(sql, values); // Insert the record
+
+    // 👇 Fetch the inserted record using land_property_id
+    const [newProperty] = await query(`SELECT * FROM properties WHERE land_property_id = ?`, [land_property_id]);
+
+    // Parse JSON field if needed
+    newProperty.additional_documents = JSON.parse(newProperty.additional_documents || '[]');
+
+    return {
+      status: 200,
+      message: 'Added successfully',
+      property: newProperty
+    };
   } catch (err) {
     console.error('Error creating property:', err); // Log the error for debugging
     return { status: 500, message: 'Internal Server Error', error: err.message }; // Propagate the error
@@ -143,25 +154,27 @@ export const updateProperty = async (id, data) => {
     company_id, land_property_name, land_property_id, upazila, district, mouza_number,
     survey_category, khatian_number, cs_khatian, rs_khatian, sa_khatian,
     bs_khatian, mutation_khatian, city_survey_khatian, survey_location,
-    JSON.stringify(additional_documents || []),  // Convert JSON array to string
+    JSON.stringify(additional_documents || []),
     owner_name, phone_number, present_address, nid, nid_file,
     owner_photo, tin_number, tin_file, land_area, unit, note, reminder, id
   ];
 
   try {
-    const updateResult = await query(sql, values); // Execute the update query
+    const updateResult = await query(sql, values);
 
     if (updateResult.affectedRows === 0) {
       return { status: 404, message: 'Property not found or not updated' };
     }
 
-    // Fetch the updated property
     const [updatedProperty] = await query(`SELECT * FROM properties WHERE id = ?`, [id]);
+
+    // ✅ Parse the JSON field before returning
+    updatedProperty.additional_documents = JSON.parse(updatedProperty.additional_documents || '[]');
 
     return {
       status: 200,
       message: 'Updated successfully',
-      updatedProperty
+      property: updatedProperty
     };
   } catch (err) {
     console.error('Error updating property:', err);
@@ -180,5 +193,19 @@ export const deleteProperty = async (id) => {
   } catch (err) {
     console.error('Error deleting property:', err); // Log error for debugging
     return { status: 500, message: 'Error deleting property', error: err.message };
+  }
+};
+
+
+// Get Property Count
+export const getPropertyCount = async () => {
+  const sql = 'SELECT COUNT(*) AS total FROM properties';
+
+  try {
+    const [result] = await query(sql);
+    return { status: 200, total: result.total };
+  } catch (err) {
+    console.error('Error getting property count:', err);
+    return { status: 500, message: 'Error getting property count', error: err.message };
   }
 };

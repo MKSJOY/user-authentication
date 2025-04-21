@@ -38,3 +38,17 @@ export const deletePlot = async (id) => {
 export const getPlotsByPropertyId = async (propertyId) => {
     return await query("SELECT * FROM plots WHERE property_id = ?", [propertyId]);
   };
+
+
+  // Get summary of plots (Total, Sold, Available)
+export const getPlotSummary = async () => {
+  const result = await query(`
+    SELECT
+      COUNT(*) AS total_plots,
+      COUNT(CASE WHEN inventory_for_sale = 'Yes' THEN 1 END) AS available_plots,
+      COUNT(CASE WHEN inventory_for_sale = 'No' THEN 1 END) AS sold_plots
+    FROM plots
+  `);
+
+  return result[0]; // Returns the first (and only) row in the result
+};

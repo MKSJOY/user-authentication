@@ -5,6 +5,7 @@ import {
   createProjectController,
   updateProjectController,
   deleteProjectController,
+  getProjectSummaryController,
 } from '../controllers/project-controller.js';
 
 const router = express.Router();
@@ -23,5 +24,8 @@ router.put('/update/:id', updateProjectController);
 
 // Delete a project (also deletes associated files)
 router.delete('/delete/:id', deleteProjectController);
+
+////Project Summary Dashboard 
+router.get('/summary', getProjectSummaryController);
 
 export const projectRoutes = router;

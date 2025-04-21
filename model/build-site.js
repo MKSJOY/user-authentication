@@ -1,14 +1,12 @@
 import { query } from "../config/database.js";
 
 export default class Building {
-  // Check if project_name exists in the projects table
   static async checkProjectNameExists(project_name) {
     const sql = `SELECT id FROM projects WHERE project_name = ? LIMIT 1`;
     const result = await query(sql, [project_name]);
-    return result.length > 0;  // Return true if project exists, else false
+    return result.length > 0;
   }
 
-  // Create a new building
   static async createBuilding(data) {
     const {
       company_id,
@@ -27,10 +25,9 @@ export default class Building {
       architect_file,
     } = data;
 
-    // Check if project_name exists in the projects table
     const projectExists = await this.checkProjectNameExists(project_name);
     if (!projectExists) {
-      throw new Error("Project name does not exist in the projects table.");
+      throw new Error("Project name does not exist.");
     }
 
     const sql = `
@@ -58,7 +55,6 @@ export default class Building {
     ]);
   }
 
-  // Update a building by id
   static async updateBuilding(id, data) {
     const {
       company_id,
@@ -77,17 +73,16 @@ export default class Building {
       architect_file,
     } = data;
 
-    // Check if project_name exists in the projects table
     const projectExists = await this.checkProjectNameExists(project_name);
     if (!projectExists) {
-      throw new Error("Project name does not exist in the projects table.");
+      throw new Error("Project name does not exist.");
     }
 
     const sql = `
       UPDATE buildings SET 
-      company_id=?, project_name=?, site_no=?, avg_flat_size=?, floor_area_size=?, building_height=?, 
-      flat_per_floor=?, piling_type=?, facing_type=?, start_date=?, 
-      handover_date=?, stage=?, status=?, architect_file=? 
+        company_id=?, project_name=?, site_no=?, avg_flat_size=?, floor_area_size=?, 
+        building_height=?, flat_per_floor=?, piling_type=?, facing_type=?, 
+        start_date=?, handover_date=?, stage=?, status=?, architect_file=? 
       WHERE id=?`;
 
     return query(sql, [
@@ -109,32 +104,32 @@ export default class Building {
     ]);
   }
 
-  // Get all buildings
   static async getAllBuildings() {
-  const sql = `SELECT * FROM buildings`;
-  return query(sql);
+    return query(`SELECT * FROM buildings`);
   }
 
-  // Add method to get building by ID
   static async getBuildingById(id) {
-    try {
-      const sql = `SELECT * FROM buildings WHERE id = ?`;
-      return query(sql, [id]);  // Return the result of the query
-    } catch (error) {
-      throw new Error("Error fetching building by ID");
-    }
+    return query(`SELECT * FROM buildings WHERE id = ?`, [id]);
   }
 
-
-  // Delete a building by id
   static async deleteBuilding(id) {
-    const sql = `DELETE FROM buildings WHERE id = ?`;
-    return query(sql, [id]);
+    return query(`DELETE FROM buildings WHERE id = ?`, [id]);
   }
 
-  // Get all project names for dropdown suggestion
   static async getProjectNames() {
-    const sql = `SELECT project_name FROM projects`;
-    return query(sql);
+    return query(`SELECT project_name FROM projects`);
+  }
+
+  static async getBuildingSummary() {
+    const sql = `
+      SELECT 
+        COUNT(*) AS total,
+        COUNT(CASE WHEN status = 'Completed' THEN 1 END) AS completed,
+        COUNT(CASE WHEN status = 'Active' THEN 1 END) AS active,
+        COUNT(CASE WHEN status = 'Inactive' THEN 1 END) AS inactive
+      FROM buildings
+    `;
+    const [result] = await query(sql);
+    return result;
   }
 }

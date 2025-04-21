@@ -51,28 +51,26 @@ CREATE TABLE projects (
 );
 
 
---buildings table
-CREATE TABLE IF NOT EXISTS buildings (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    project_name VARCHAR(255) NOT NULL,
-    site_no VARCHAR(50) NOT NULL,
-    avg_flat_size FLOAT NOT NULL,
-    floor_area_size FLOAT NOT NULL,
-    building_height FLOAT NOT NULL,
-    flat_per_floor INT NOT NULL,
-    piling_type VARCHAR(50) NOT NULL,
-    facing_type VARCHAR(50) NOT NULL,
-    start_date DATE NOT NULL,
-    handover_date DATE NOT NULL,
-    stage VARCHAR(50) NOT NULL,
-    status VARCHAR(255) NOT NULL,
-    architect_file VARCHAR(255) NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-
-    -- Foreign key reference to the projects table using project_name
-    CONSTRAINT fk_building_project FOREIGN KEY (project_name) REFERENCES projects(project_name) ON DELETE CASCADE
-)ENGINE=InnoDB;
-
+CREATE TABLE buildings (
+  id CHAR(36) PRIMARY KEY DEFAULT (UUID()), -- UUID for id
+  company_id CHAR(36) NOT NULL, -- Matches UUID from companies table
+  project_id CHAR(36) NOT NULL, -- Matches UUID from projects table
+  site_no VARCHAR(50) NOT NULL,
+  avg_flat_size FLOAT NOT NULL,
+  floor_area_size FLOAT NOT NULL,
+  building_height FLOAT NOT NULL,
+  flat_per_floor INT NOT NULL,
+  piling_type VARCHAR(50) NOT NULL,
+  facing_type VARCHAR(50) NOT NULL,
+  start_date DATE NOT NULL,
+  handover_date DATE NOT NULL,
+  stage VARCHAR(50) NOT NULL,
+  status VARCHAR(255) NOT NULL,
+  architect_file VARCHAR(255),
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (company_id) REFERENCES companies(id) ON DELETE CASCADE,
+  FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE
+) ENGINE=InnoDB;
 
 -- ReceiptVoucher --
 CREATE TABLE receipt_vouchers (
@@ -105,5 +103,59 @@ CREATE TABLE payment_schedules (
         ON DELETE CASCADE
 );
 
+
+-- Property --
+CREATE TABLE properties (
+  id CHAR(36) PRIMARY KEY DEFAULT (UUID()), -- UUID for id
+  company_id CHAR(36) NOT NULL, -- Matches UUID from companies table
+  land_property_name VARCHAR(255) NOT NULL,
+  land_property_id VARCHAR(255) NOT NULL UNIQUE,
+  upazila VARCHAR(255),
+  district VARCHAR(255),
+  mouza_number VARCHAR(50),
+  survey_category VARCHAR(100),
+  khatian_number VARCHAR(100),
+  cs_khatian VARCHAR(100),
+  rs_khatian VARCHAR(100),
+  sa_khatian VARCHAR(100),
+  bs_khatian VARCHAR(100),
+  mutation_khatian VARCHAR(100),
+  city_survey_khatian VARCHAR(100),
+  survey_location TEXT,
+  additional_documents TEXT,
+  owner_name VARCHAR(255),
+  phone_number VARCHAR(50),
+  present_address TEXT,
+  nid VARCHAR(50),
+  nid_file VARCHAR(255),
+  owner_photo VARCHAR(255),
+  tin_number VARCHAR(50),
+  tin_file VARCHAR(255),
+  land_area DECIMAL(10, 2),
+  unit VARCHAR(50),
+  note TEXT,
+  reminder TEXT,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  FOREIGN KEY (company_id) REFERENCES companies(id) ON DELETE CASCADE
+);
+
+
+--plot--
+
+CREATE TABLE plots (
+  id CHAR(36) PRIMARY KEY DEFAULT (UUID()), -- UUID for id
+  company_id CHAR(36) NOT NULL, -- Matches UUID from companies table
+  plot_name VARCHAR(255) NOT NULL,
+  plot_shape VARCHAR(50) NOT NULL,
+  plot_area DECIMAL(10,2) NOT NULL,
+  inventory_for_sale ENUM('Yes', 'No') NOT NULL,
+  note TEXT,
+  property_id VARCHAR(100) NOT NULL,
+  property_name VARCHAR(255) NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (company_id) REFERENCES companies(id) ON DELETE CASCADE,
+  FOREIGN KEY (property_id) REFERENCES properties(land_property_id) ON DELETE CASCADE
+);
 
 

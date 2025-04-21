@@ -1,5 +1,5 @@
 import express from "express";
-import { addPlot, getPlots, getPlot, editPlot, removePlot, getPlotsByProperty } from "../controllers/plot-controller.js";
+import { addPlot, getPlots, getPlot, editPlot, removePlot, getPlotsByProperty, getSummary } from "../controllers/plot-controller.js";
 import { authMiddleware } from "../middleware/authMiddleware.js";
 
 const router = express.Router();
@@ -10,5 +10,7 @@ router.get("/get/:id", authMiddleware, getPlot);
 router.put("/update/:id", authMiddleware, editPlot);
 router.delete("/delete/:id", authMiddleware, removePlot);
 router.get("/property/:propertyId", authMiddleware, getPlotsByProperty);
+router.get("/summary", authMiddleware, getSummary);
+
 
 export const plotRoutes = router;

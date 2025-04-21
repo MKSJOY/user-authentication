@@ -1,4 +1,4 @@
-import { createPlot, getAllPlots, getPlotById, updatePlot, deletePlot, getPlotsByPropertyId } from "../model/plot-model.js";
+import { createPlot, getAllPlots, getPlotById, updatePlot, deletePlot, getPlotSummary, getPlotsByPropertyId } from "../model/plot-model.js";
 
 // Create a new plot
 export const addPlot = async (req, res) => {
@@ -85,6 +85,17 @@ export const getPlotsByProperty = async (req, res) => {
     res.json({ success: true, plots });
   } catch (error) {
     console.error("Error fetching plots by property ID:", error);
+    res.status(500).json({ success: false, message: "Internal Server Error" });
+  }
+};
+
+// Get plot summary (Total, Sold, Available)
+export const getSummary = async (req, res) => {
+  try {
+    const summary = await getPlotSummary();
+    res.json({ success: true, summary });
+  } catch (error) {
+    console.error("Error fetching plot summary:", error);
     res.status(500).json({ success: false, message: "Internal Server Error" });
   }
 };

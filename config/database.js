@@ -1,6 +1,6 @@
 import mysql from "mysql2/promise";
 import dotenv from "dotenv";
-import fs from "fs"; // ✅ Required for reading the CA certificate
+import fs from "fs";
 
 dotenv.config();
 
@@ -17,6 +17,7 @@ const pool = mysql.createPool({
   queueLimit: 0,
 });
 
+export { pool }; // ✅ Now this is exported
 export const query = async (sql, params) => {
   try {
     const [results] = await pool.execute(sql, params);

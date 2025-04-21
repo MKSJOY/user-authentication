@@ -1,3 +1,4 @@
+
 import express from "express";
 import {
   createBuilding,
@@ -5,15 +6,17 @@ import {
   getBuildingById,
   updateBuilding,
   deleteBuilding,
+  getBuildingSummary,
 } from "../controllers/build-site-controller.js";
 
 const router = express.Router();
 
-router.post("/add", createBuilding);
+// ✅ Put /summary above /:id
+router.get("/summary", getBuildingSummary);
 router.get("/all", getAllBuildings);
+router.post("/add", createBuilding);
 router.get("/:id", getBuildingById);
-router.put("/:id", updateBuilding); 
+router.put("/:id", updateBuilding);
 router.delete("/:id", deleteBuilding);
-//router.get("/projects/names", getProjectNames);
 
 export const buildRoutes = router;

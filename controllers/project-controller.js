@@ -1,4 +1,4 @@
-import { getAllProjects, getProjectById, createProject, updateProject, deleteProject } from "../model/project.js";
+import { getAllProjects, getProjectById, createProject, updateProject, deleteProject, getProjectSummary } from "../model/project.js";
 
 // Get all projects (supports filters & pagination)
 export const getAllProjectsController = async (req, res) => {
@@ -103,6 +103,19 @@ export const deleteProjectController = async (req, res) => {
     res.json({ success: true, message: "Project deleted successfully" });
   } catch (error) {
     console.error("Error deleting project:", error);
+    res.status(500).json({ success: false, message: "Internal Server Error" });
+  }
+};
+
+
+//Project Summary Dashboard 
+
+export const getProjectSummaryController = async (req, res) => {
+  try {
+    const summary = await getProjectSummary();
+    res.json({ success: true, summary });
+  } catch (error) {
+    console.error("Error getting project summary:", error);
     res.status(500).json({ success: false, message: "Internal Server Error" });
   }
 };

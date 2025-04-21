@@ -1,4 +1,4 @@
-import { createProperty, getAllProperties, getPropertyById, updateProperty, deleteProperty } from "../model/property.js";
+import { createProperty, getAllProperties, getPropertyById, updateProperty, deleteProperty,getPropertyCount } from "../model/property.js";
 
 // Add Property
 export const addProperty = async (req, res) => {
@@ -49,7 +49,7 @@ export const updateProperties = async (req, res) => {
 
         const updatedProperty = await getPropertyById(req.params.id); // Fetch the updated property
 
-        return res.status(200).json({ success: true, message: "Updated successfully", property: updatedProperty });
+        return res.status(200).json({ success: true, message: "Updated successfully" , property: updatedProperty });
     } catch (error) {
         return res.status(500).json({ success: false, error: error.message });
     }
@@ -69,3 +69,15 @@ export const deleteProperties = async (req, res) => {
         return res.status(500).json({ success: false, error: error.message });
     }
 };
+
+
+
+// Get Total Property Count
+export const totalPropertyCount = async (req, res) => {
+    try {
+      const count = await getPropertyCount();
+      return res.status(200).json({ success: true, data: count });
+    } catch (error) {
+      return res.status(500).json({ success: false, error: error.message });
+    }
+  };
