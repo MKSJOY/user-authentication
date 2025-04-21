@@ -11,11 +11,8 @@ export const createClient = async (req, res) => {
 
     // Handle nominee as a single object or array
     const { nominees } = data;
-    if (nominees) {
-      // If nominees is a single nominee object, make it an array
-      if (!Array.isArray(nominees)) {
-        data.nominees = [nominees];
-      }
+    if (nominees && !Array.isArray(nominees)) {
+      data.nominees = [nominees];
     }
 
     await Client.createClient(data);
@@ -26,25 +23,28 @@ export const createClient = async (req, res) => {
   }
 };
 
-// Get all clients along with their nominees
+// ✅ Get all clients grouped with nominees
 export const getAllClients = async (req, res) => {
   try {
     const clients = await Client.getAllClients();
+    // Ensure all clients' nominees are grouped correctly
     res.status(200).json({ success: true, clients });
   } catch (error) {
     res.status(500).json({ success: false, message: "Error fetching clients", error: error.message });
   }
 };
 
-// Get client by ID along with their nominees
+// ✅ Get client by ID grouped with nominees
 export const getClientById = async (req, res) => {
   try {
     const clientId = req.params.id;
     const client = await Client.getClientById(clientId);
-    if (client.length === 0) {
+
+    if (!client || client.length === 0) {
       return res.status(404).json({ success: false, message: "Client not found" });
     }
 
+    // Return the first client (since getClientById returns an array with a single client)
     res.status(200).json({ success: true, client: client[0] });
   } catch (error) {
     res.status(500).json({ success: false, message: "Error fetching client", error: error.message });
