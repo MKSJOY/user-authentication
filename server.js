@@ -19,6 +19,7 @@ import { saleFlatRoutes } from "./routes/create_sale_order_flat.js";
 import { saleLandRoutes } from "./routes/create_sale_order_land.js";
 import { addScrapProduct } from "./routes/add_scrap_product.js";
 import { scrapSale } from "./routes/scrap_sale.js";
+import { fixSerial } from "./routes/fix-serial-client.js";
 //import { expenseRoutes } from "./routes/expense.js";
 
 dotenv.config(); // Load .env variables at the top
@@ -65,6 +66,7 @@ app.use("/api/sale-order/flat", authMiddleware, saleFlatRoutes);
 app.use("/api/sale-order/land", authMiddleware, saleLandRoutes);
 app.use("/api/add-scrap/product", authMiddleware, addScrapProduct);
 app.use("/api/scrap-sale", authMiddleware, scrapSale);
+app.use("/api/clients", fixSerial);
 //app.use("/api/expenses", authMiddleware, expenseRoutes);
 
 // Error handling middleware
