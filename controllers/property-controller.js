@@ -27,15 +27,16 @@ export const getAllProperty = async (req, res) => {
 // Get Property by ID
 export const getPropertiesById = async (req, res) => {
     try {
-        const property = await getPropertyById(req.params.id); // Calls the getPropertyById from model
-        if (!property) {
+        const result = await getPropertyById(req.params.id); // Get full result object
+        if (!result.property) {
             return res.status(404).json({ success: false, message: "Property not found" });
         }
-        return res.status(200).json({ success: true, data: property });
+        return res.status(200).json({ success: true, data: result.property }); // Send only property
     } catch (error) {
         return res.status(500).json({ success: false, error: error.message });
     }
 };
+
 
 //Update property
 export const updateProperties = async (req, res) => {
