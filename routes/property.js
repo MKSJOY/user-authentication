@@ -19,9 +19,9 @@ router.get("/properties/all", getAllProperty);
 router.get("/properties/:id", getPropertiesById);
 
 // Update Property
-router.put("/properties/:id", updateProperties);
+router.put("/properties/update/:id", updateProperties);
 
 // Delete Property
-router.delete("/properties/:id", deleteProperties);
+router.delete("/properties/delete/:id", deleteProperties);
 
 export const propertyRoutes = router;
