@@ -158,4 +158,20 @@ CREATE TABLE plots (
   FOREIGN KEY (property_id) REFERENCES properties(land_property_id) ON DELETE CASCADE
 );
 
-
+--suppliers table--
+CREATE TABLE suppliers (
+  id CHAR(36) PRIMARY KEY DEFAULT (UUID()),
+  company_id CHAR(36),
+  name VARCHAR(255) NOT NULL,
+  phone VARCHAR(20) NOT NULL,
+  location VARCHAR(255) NOT NULL,
+  nid VARCHAR(50),
+  tin_no VARCHAR(50),
+  email VARCHAR(100),
+  brand VARCHAR(100),
+  product VARCHAR(100),
+  status ENUM('active', 'inactive'),
+  photo_url TEXT,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (company_id) REFERENCES companies(id) ON DELETE CASCADE
+);

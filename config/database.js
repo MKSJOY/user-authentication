@@ -15,6 +15,9 @@ const pool = mysql.createPool({
   waitForConnections: true,
   connectionLimit: 10,
   queueLimit: 0,
+  enableKeepAlive: true,              // ✅
+  keepAliveInitialDelay: 10000,       // ✅
+  connectTimeout: 10000               // ✅
 });
 
 export { pool }; // ✅ Now this is exported
