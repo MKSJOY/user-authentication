@@ -1,6 +1,6 @@
 import Client from "../model/register-client.js";
 
-// Create a new client with single or multiple nominee
+// Create a new client with single or multiple nominees
 export const createClient = async (req, res) => {
   try {
     const data = req.body; // Assuming client data is sent in the body
@@ -9,7 +9,7 @@ export const createClient = async (req, res) => {
     if (response.success) {
       res.status(201).json({
         success: true,
-        message: "Client and nominees registered successfully",
+        message: "Client registered successfully",
       });
     } else {
       res.status(400).json({
@@ -28,19 +28,18 @@ export const createClient = async (req, res) => {
   }
 };
 
-
-// ✅ Get all clients grouped with nominees
+// ✅ Get all clients grouped with nominees, projects, and buildings
 export const getAllClients = async (req, res) => {
   try {
     const clients = await Client.getAllClients();
-    // Ensure all clients' nominees are grouped correctly
+    // Ensure all clients' nominees are grouped correctly, and projects/buildings are included
     res.status(200).json({ success: true, clients });
   } catch (error) {
     res.status(500).json({ success: false, message: "Error fetching clients", error: error.message });
   }
 };
 
-// ✅ Get client by ID grouped with nominees
+// ✅ Get client by ID grouped with nominees, projects, and buildings
 export const getClientById = async (req, res) => {
   try {
     const clientId = req.params.id;
