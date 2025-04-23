@@ -90,3 +90,65 @@ export const deleteClient = async (req, res) => {
     res.status(500).json({ success: false, message: "Error deleting client", error: error.message });
   }
 };
+
+//Get all projects and buildings under a client
+export const getAllProjectsAndBuildingsByClient = async (req, res) => {
+  try {
+    const clientId = req.params.id;
+    const data = await Client.getAllProjectsAndBuildingsByClient(clientId);
+    res.status(200).json({
+      success: true,
+      data,
+    });
+  } catch (error) {
+    console.error("Error fetching all projects and buildings:", error.message);
+    res.status(500).json({
+      success: false,
+      message: "Error fetching all projects and buildings",
+      error: error.message,
+    });
+  }
+};
+
+//Get only projects under a client
+export const getProjectsByClient = async (req, res) => {
+  try {
+    const client_id = req.params.id;
+    const data = await Client.getProjectsByClient(client_id);
+    
+    if (!data || data.length === 0) {
+      return res.status(404).json({ success: false, message: "No projects found for this client." });
+    }
+
+    res.status(200).json({ success: true, data });
+  } catch (error) {
+    console.error("Error fetching projects by client:", error);
+    res.status(500).json({
+      success: false,
+      message: "Error fetching projects",
+      error: error.message,
+    });
+  }
+};
+
+//Get only buildings under a client
+export const getBuildingsByClient = async (req, res) => {
+  try {
+    const client_id = req.params.id;
+    const data = await Client.getBuildingsByClient(client_id);
+
+    if (!data || data.length === 0) {
+      return res.status(404).json({ success: false, message: "No buildings found for this client." });
+    }
+    res.status(200).json({ success: true, data });
+  } catch (error) {
+    console.error("Error fetching buildings by client:", error);
+    res.status(500).json({
+      success: false,
+      message: "Error fetching buildings",
+      error: error.message,
+    });
+  }
+};
+
+
