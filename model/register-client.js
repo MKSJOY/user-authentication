@@ -391,6 +391,85 @@ export default class Client {
   
     return clients;
   }
+
+
+    //get all projects and buildings under client
+  static async getAllProjectsAndBuildingsByClient(id) {
+    try {
+      const sql = `
+        SELECT 
+          p.project_name AS project_name,
+          b.site_no AS site_no
+        FROM clients c
+        LEFT JOIN client_projects cp ON c.id = cp.client_id
+        LEFT JOIN projects p ON cp.project_id = p.id
+        LEFT JOIN client_buildings cb ON c.id = cb.client_id
+        LEFT JOIN buildings b ON cb.building_id = b.id
+        WHERE c.id = ?
+      `;
+  
+      const result = await query(sql, [id]);
+  
+      // Use Set to avoid duplicates
+      const projectSet = new Set();
+      const buildingSet = new Set();
+  
+      result.forEach(row => {
+        if (row.project_name) projectSet.add(row.project_name);
+        if (row.site_no) buildingSet.add(row.site_no);
+      });
+
+      return{
+        project_names: Array.from(projectSet),
+        site_nos: Array.from(buildingSet)
+      };
+      
+    } catch (error) {
+      return{
+        success: false,
+        message: "Error fetching projects and buildings by client",
+        error: error.message
+      };
+    }
+  }
   
 
+  // Method to get only projects under a client
+  static async getProjectsByClient(id) {
+    try {
+      const sql = `
+        SELECT 
+          cp.project_id, p.project_name as project_name
+        FROM client_projects cp
+        LEFT JOIN projects p ON cp.project_id = p.id
+        WHERE cp.client_id = ?
+      `;
+      const result = await query(sql, [id]);
+      //console.log("Projects query result:", result); // Debug log
+      return result;
+    } catch (err) {
+      //console.error("Error fetching projects:", err);
+      throw new Error("Error fetching projects by client");
+    }
+  }
+  
+  // Method to get only buildings under a client
+  static async getBuildingsByClient(id) {
+    try {
+      const sql = `
+        SELECT 
+          cb.building_id, b.site_no as site_no
+        FROM client_buildings cb
+        LEFT JOIN buildings b ON cb.building_id = b.id
+        WHERE cb.client_id = ?
+      `;
+      const result = await query(sql, [id]);
+      //console.log("Buildings query result:", result); // Debug log
+      return result;
+    } catch (err) {
+      //console.error("Error fetching buildings:", err);
+      throw new Error("Error fetching buildings by client");
+    }
+  }
+  
 }
