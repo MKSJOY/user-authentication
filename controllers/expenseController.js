@@ -59,7 +59,16 @@ export const createExpense = async (req, res) => {
 // Read All
 export const getAllExpenses = async (req, res) => {
   try {
-    const expenses = await query(`SELECT * FROM expenses`);
+    const expenses = await query(`
+      SELECT 
+        e.*, 
+        p.project_name, 
+        b.site_no 
+      FROM expenses e
+      LEFT JOIN projects p ON e.project_id = p.id
+      LEFT JOIN buildings b ON e.building_site_id = b.id
+    `);
+
     const result = await Promise.all(
       expenses.map(async (expense) => {
         const costs = await query(
@@ -76,12 +85,23 @@ export const getAllExpenses = async (req, res) => {
   }
 };
 
-// Read by ID
+
+// Read by ID 
 export const getExpenseById = async (req, res) => {
   const { id } = req.params;
 
   try {
-    const expenseRows = await query(`SELECT * FROM expenses WHERE id = ?`, [id]);
+    const expenseRows = await query(`
+      SELECT 
+        e.*, 
+        p.project_name, 
+        b.site_no 
+      FROM expenses e
+      LEFT JOIN projects p ON e.project_id = p.id
+      LEFT JOIN buildings b ON e.building_site_id = b.id
+      WHERE e.id = ?
+    `, [id]);
+
     if (expenseRows.length === 0) {
       return res.status(404).json({ message: "Expense not found" });
     }
@@ -96,6 +116,7 @@ export const getExpenseById = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
+
 
 // Update
 export const updateExpense = async (req, res) => {

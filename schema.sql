@@ -36,18 +36,22 @@ CREATE TABLE user_companies (
 
 --projects table
 CREATE TABLE projects (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    project_name VARCHAR(255) NOT NULL UNIQUE,
-    location VARCHAR(255) NOT NULL,
-    contact_number VARCHAR(20) NOT NULL,
-    project_start_date DATE NOT NULL,
-    approx_handover_date DATE NOT NULL,
-    project_code VARCHAR(50) NOT NULL,
-    stage INT NOT NULL,
-    project_type INT NOT NULL,
-    status VARCHAR(50) NOT NULL,
-    logo VARCHAR(255) NOT NULL,
-    architect_drawing_file VARCHAR(255) NOT NULL
+  id CHAR(36) PRIMARY KEY DEFAULT (UUID()), -- UUID for id
+  company_id CHAR(36) NOT NULL, -- Matches UUID from companies table
+  project_name VARCHAR(255) NOT NULL UNIQUE,
+  location VARCHAR(255) NOT NULL,
+  contact_number VARCHAR(20) NOT NULL,
+  project_start_date DATE NOT NULL,
+  approx_handover_date DATE NOT NULL,
+  project_code VARCHAR(50) NOT NULL,
+  stage VARCHAR(150) NOT NULL,
+  project_type VARCHAR(150) NOT NULL,
+  status VARCHAR(50) NOT NULL,
+  logo VARCHAR(255) NOT NULL,
+  architect_drawing_file VARCHAR(255) NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  FOREIGN KEY (company_id) REFERENCES companies(id) ON DELETE CASCADE
 );
 
 
@@ -140,6 +144,34 @@ CREATE TABLE properties (
   FOREIGN KEY (company_id) REFERENCES companies(id) ON DELETE CASCADE
 );
 
+--expense--
+CREATE TABLE expenses (
+    id CHAR(36) PRIMARY KEY DEFAULT (UUID()),
+    date DATE NOT NULL,
+    type ENUM('Flat/Apartment', 'Other') NOT NULL,
+    project_id CHAR(36),
+    building_site_id CHAR(36),
+    category_name VARCHAR(100),
+    category_id INT,
+    payment_type ENUM('Cash', 'Bank', 'Other') NOT NULL,
+    cost_purpose TEXT,
+    manual_inv_no VARCHAR(100),
+    expense_by VARCHAR(100) NOT NULL,
+    note TEXT,
+    attachment_path VARCHAR(255),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (project_id) REFERENCES projects(id),
+    FOREIGN KEY (building_site_id) REFERENCES buildings(id)
+);
+CREATE TABLE expense_costs (
+    id CHAR(36) PRIMARY KEY DEFAULT (UUID()),
+    expense_id CHAR(36) NOT NULL,
+    cost_name VARCHAR(100) NOT NULL,
+    cost_amount DECIMAL(10, 2) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (expense_id) REFERENCES expenses(id) ON DELETE CASCADE
+);
 
 --plot--
 
