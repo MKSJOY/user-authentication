@@ -2,10 +2,10 @@ import { query } from "../config/database.js";
 
 // Create a new plot
 export const createPlot = async (plotData) => {
-  const { company_id, plot_name, plot_shape, plot_area, inventory_for_sale, note, property_id, property_name } = plotData;
+  const { company_id, plot_name, plot_shape, plot_area, inventory_for_sale, note, land_id, property_name } = plotData;
   return await query(
-    "INSERT INTO plots (company_id, plot_name, plot_shape, plot_area, inventory_for_sale, note, property_id, property_name) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
-    [company_id, plot_name, plot_shape, plot_area, inventory_for_sale, note, property_id, property_name]
+    "INSERT INTO plots (company_id, plot_name, plot_shape, plot_area, inventory_for_sale, note, land_id, property_name) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+    [company_id, plot_name, plot_shape, plot_area, inventory_for_sale, note, land_id, property_name]
   );
 };
 
@@ -22,10 +22,10 @@ export const getPlotById = async (id) => {
 
 // Update a plot
 export const updatePlot = async (id, updatedData) => {
-  const { company_id, plot_name, plot_shape, plot_area, inventory_for_sale, note, property_id, property_name } = updatedData;
+  const { company_id, plot_name, plot_shape, plot_area, inventory_for_sale, note, land_id, property_name } = updatedData;
   return await query(
-    "UPDATE plots SET company_id = ?, plot_name = ?, plot_shape = ?, plot_area = ?, inventory_for_sale = ?, note = ?, property_id = ?, property_name = ? WHERE id = ?",
-    [company_id, plot_name, plot_shape, plot_area, inventory_for_sale, note, property_id, property_name, id]
+    "UPDATE plots SET company_id = ?, plot_name = ?, plot_shape = ?, plot_area = ?, inventory_for_sale = ?, note = ?, land_id = ?, property_name = ? WHERE id = ?",
+    [company_id, plot_name, plot_shape, plot_area, inventory_for_sale, note, land_id, property_name, id]
   );
 };
 
