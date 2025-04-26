@@ -75,8 +75,8 @@ export const removePlot = async (req, res) => {
 // Get plots by property ID
 export const getPlotsByProperty = async (req, res) => {
   try {
-    const { propertyId } = req.params;
-    const plots = await getPlotsByPropertyId(propertyId);
+    const { land_id } = req.params;
+    const plots = await getPlotsByPropertyId(land_id);
 
     if (plots.length === 0) {
       return res.status(404).json({ success: false, message: "No plots found for this property" });
