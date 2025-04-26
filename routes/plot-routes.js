@@ -9,6 +9,6 @@ router.get("/all", authMiddleware, getPlots);
 router.get("/get/:id", authMiddleware, getPlot);
 router.put("/update/:id", authMiddleware, editPlot);
 router.delete("/delete/:id", authMiddleware, removePlot);
-router.get("/property/:propertyId", authMiddleware, getPlotsByProperty);
+router.get("/property/:land_id", authMiddleware, getPlotsByProperty);
 
 export const plotRoutes = router;
