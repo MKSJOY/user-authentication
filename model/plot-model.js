@@ -35,6 +35,6 @@ export const deletePlot = async (id) => {
 };
 
 // Get plots by property ID
-export const getPlotsByPropertyId = async (propertyId) => {
-    return await query("SELECT * FROM plots WHERE property_id = ?", [propertyId]);
+export const getPlotsByPropertyId = async (land_id) => {
+    return await query("SELECT * FROM plots WHERE property_id = ?", [land_id]);
   };
