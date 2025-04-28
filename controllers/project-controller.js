@@ -1,6 +1,12 @@
-import { getAllProjects, getProjectById, createProject, updateProject, deleteProject } from "../model/project.js";
+import {
+  getAllProjects,
+  getProjectById,
+  createProject,
+  updateProject,
+  deleteProject,
+} from "../model/project.js";
 
-// Get all projects (supports filters & pagination)
+// Get all projects
 export const getAllProjectsController = async (req, res) => {
   try {
     const { status, start_date, handover_date, page = 1, limit = 10 } = req.query;
@@ -13,16 +19,14 @@ export const getAllProjectsController = async (req, res) => {
   }
 };
 
-// Get a single project by ID
+// Get a single project
 export const getProjectByIdController = async (req, res) => {
   try {
     const { id } = req.params;
     const project = await getProjectById(id);
-
     if (!project) {
       return res.status(404).json({ success: false, message: "Project not found" });
     }
-
     res.json({ success: true, project });
   } catch (error) {
     console.error("Error fetching project:", error);
@@ -30,58 +34,94 @@ export const getProjectByIdController = async (req, res) => {
   }
 };
 
-// Create a new project (handles file paths as strings)
+// Create a new project
 export const createProjectController = async (req, res) => {
   try {
-    const { 
-      company_id, project_name, location, contact_number, project_start_date, 
-      approx_handover_date, project_code, stage, project_type, status, 
-      logo, architect_drawing_file 
+    const {
+      company_id,
+      project_name,
+      location,
+      contact_number,
+      project_start_date,
+      approx_handover_date,
+      stage,
+      project_type,
+      status,
+      logo,                         // string
+      architect_drawing_files       // array of strings
     } = req.body;
 
-    // Check if all required fields are present
-    if (!company_id || !project_name || !location || !contact_number || !project_start_date || 
-        !approx_handover_date || !stage || !project_type || !status || !logo || !architect_drawing_file) {
-      return res.status(400).json({ success: false, message: "All fields are required" });
-    }
+    const projectData = {
+      company_id,
+      project_name,
+      location,
+      contact_number,
+      project_start_date,
+      approx_handover_date,
+      stage,
+      project_type,
+      status,
+      logo,
+      architect_drawing_files: Array.isArray(architect_drawing_files)
+        ? architect_drawing_files
+        : architect_drawing_files
+          ? [architect_drawing_files]
+          : [], // Normalize to array
+    };
 
-    // Validate date formats (yyyy-mm-dd)
-    if (!isValidDate(project_start_date) || !isValidDate(approx_handover_date)) {
-      return res.status(400).json({ success: false, message: "Invalid date format" });
-    }
-
-    // Check if project name already exists
-    const existingProject = await getProjectById(project_name);
-    if (existingProject) {
-      return res.status(400).json({ success: false, message: "This project already exists" });
-    }
-
-    // Create new project
-    await createProject(req.body);
+    // Call the model to create the project, project_code will be auto-generated
+    await createProject(projectData);
     res.status(201).json({ success: true, message: "Project created successfully" });
   } catch (error) {
     console.error("Error creating project:", error);
     res.status(500).json({ success: false, message: "Internal Server Error", error: error.message });
   }
 };
-  // Utility function to check if the date is in correct format
-export const isValidDate = (date) => {
-  const regex = /^\d{4}-\d{2}-\d{2}$/;
-  return regex.test(date);
-};
 
-// Update a project (handles file paths as strings)
+// Update a project
 export const updateProjectController = async (req, res) => {
   try {
     const { id } = req.params;
-    const projectData = req.body;
+
+    const {
+      company_id,
+      project_name,
+      location,
+      contact_number,
+      project_start_date,
+      approx_handover_date,
+      stage,
+      project_type,
+      status,
+      logo,
+      architect_drawing_files
+    } = req.body;
 
     const existingProject = await getProjectById(id);
     if (!existingProject) {
       return res.status(404).json({ success: false, message: "Project not found" });
     }
 
-    await updateProject(id, projectData);
+    const updatedData = {
+      company_id,
+      project_name,
+      location,
+      contact_number,
+      project_start_date,
+      approx_handover_date,
+      stage,
+      project_type,
+      status,
+      logo,
+      architect_drawing_files: Array.isArray(architect_drawing_files)
+        ? architect_drawing_files
+        : architect_drawing_files
+          ? [architect_drawing_files]
+          : [],
+    };
+
+    // Call the model to update the project, without the project_code (it's immutable)
+    await updateProject(id, updatedData);
     res.json({ success: true, message: "Project updated successfully" });
   } catch (error) {
     console.error("Error updating project:", error);
@@ -89,7 +129,7 @@ export const updateProjectController = async (req, res) => {
   }
 };
 
-// Delete a project (also deletes associated files)
+// Delete a project
 export const deleteProjectController = async (req, res) => {
   try {
     const { id } = req.params;
@@ -99,6 +139,7 @@ export const deleteProjectController = async (req, res) => {
       return res.status(404).json({ success: false, message: "Project not found" });
     }
 
+    // Since files are just string paths, we won't delete them from filesystem
     await deleteProject(id);
     res.json({ success: true, message: "Project deleted successfully" });
   } catch (error) {
@@ -106,4 +147,3 @@ export const deleteProjectController = async (req, res) => {
     res.status(500).json({ success: false, message: "Internal Server Error" });
   }
 };
-
