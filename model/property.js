@@ -1,12 +1,18 @@
 import { query } from '../config/database.js';
 //import fs from 'fs'; // For file deletion
 
+// Helper to generate land_property_id
+const generateLandPropertyId = () => {
+  const randomPart = Math.random().toString(36).substring(2, 6).toUpperCase(); // 4 random characters
+  const timePart = Date.now().toString(36).slice(-3).toUpperCase(); // 3 characters from timestamp
+  return `LNDPR-${timePart}${randomPart}`; // Combine both parts
+};
+
 // Create Property
 export const createProperty = async (data) => {
   const {
     company_id,
     land_property_name,
-    land_property_id,
     upazila,
     district,
     mouza_number,
@@ -41,6 +47,8 @@ export const createProperty = async (data) => {
     note,
     reminder
   } = data;
+
+  const land_property_id = await generateLandPropertyId(); // Generate the land_property_id
 
   const sql = `
   INSERT INTO properties (
