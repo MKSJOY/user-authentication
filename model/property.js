@@ -120,11 +120,12 @@ export const getPropertyById = async (id) => {
   }
 };
 
+//Update Property
 export const updateProperty = async (id, data) => {
   const {
+    land_property_id,
     company_id,
     land_property_name,
-    land_property_id,
     upazila,
     district,
     mouza_number,
@@ -160,26 +161,33 @@ export const updateProperty = async (id, data) => {
     reminder
   } = data;
 
+  // Fetch the existing property data to compare land_property_id
+  const [existingProperty] = await query(`SELECT land_property_id FROM properties WHERE id = ?`, [id]);
+
+  if (existingProperty && land_property_id && land_property_id !== existingProperty.land_property_id) {
+    return { status: 400, message: "You cannot change the land_property_id when updating a property" };
+  }
+
+  // Define the SQL query and values to be updated
   const sql = `
-  UPDATE properties SET 
-    company_id = ?, land_property_name = ?, land_property_id = ?, upazila = ?, district = ?, mouza_number = ?, 
-    survey_category = ?, khatian_number = ?, cs_khatian = ?, cs_khatian_file = ?, rs_khatian = ?, rs_khatian_file = ?, 
-    sa_khatian = ?, sa_khatian_file = ?, bs_khatian = ?, bs_khatian_file = ?, mutation_khatian = ?, mutation_khatian_file = ?, 
-    city_survey_khatian = ?, city_survey_khatian_file = ?, survey_location = ?, survey_location_file = ?, 
-    recent_porcha_file = ?, additional_documents = ?, owner_name = ?, phone_number = ?, 
-    present_address = ?, nid = ?, nid_file = ?, owner_photo = ?, tin_number = ?, tin_file = ?, 
-    land_area = ?, unit = ?, note = ?, reminder = ? WHERE id = ?
-`;
+    UPDATE properties SET 
+      company_id = ?, land_property_name = ?, land_property_id = ?, upazila = ?, district = ?, mouza_number = ?, 
+      survey_category = ?, khatian_number = ?, cs_khatian = ?, cs_khatian_file = ?, rs_khatian = ?, rs_khatian_file = ?, 
+      sa_khatian = ?, sa_khatian_file = ?, bs_khatian = ?, bs_khatian_file = ?, mutation_khatian = ?, mutation_khatian_file = ?, 
+      city_survey_khatian = ?, city_survey_khatian_file = ?, survey_location = ?, survey_location_file = ?, 
+      recent_porcha_file = ?, additional_documents = ?, owner_name = ?, phone_number = ?, 
+      present_address = ?, nid = ?, nid_file = ?, owner_photo = ?, tin_number = ?, tin_file = ?, 
+      land_area = ?, unit = ?, note = ?, reminder = ? WHERE id = ?
+  `;
 
-const values = [
-  company_id, land_property_name, land_property_id, upazila, district, mouza_number,
-  survey_category, khatian_number, cs_khatian, cs_khatian_file, rs_khatian, rs_khatian_file,
-  sa_khatian, sa_khatian_file, bs_khatian, bs_khatian_file, mutation_khatian, mutation_khatian_file,
-  city_survey_khatian, city_survey_khatian_file, survey_location, survey_location_file,
-  recent_porcha_file, JSON.stringify(additional_documents || []), owner_name, phone_number,
-  present_address, nid, nid_file, owner_photo, tin_number, tin_file, land_area, unit, note, reminder, id
-];
-
+  const values = [
+    company_id, land_property_name, land_property_id, upazila, district, mouza_number,
+    survey_category, khatian_number, cs_khatian, cs_khatian_file, rs_khatian, rs_khatian_file,
+    sa_khatian, sa_khatian_file, bs_khatian, bs_khatian_file, mutation_khatian, mutation_khatian_file,
+    city_survey_khatian, city_survey_khatian_file, survey_location, survey_location_file,
+    recent_porcha_file, JSON.stringify(additional_documents || []), owner_name, phone_number,
+    present_address, nid, nid_file, owner_photo, tin_number, tin_file, land_area, unit, note, reminder, id
+  ];
 
   try {
     const updateResult = await query(sql, values); // Execute the update query
