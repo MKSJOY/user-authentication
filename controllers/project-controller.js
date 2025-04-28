@@ -41,7 +41,7 @@ export const createProjectController = async (req, res) => {
 
     // Check if all required fields are present
     if (!company_id || !project_name || !location || !contact_number || !project_start_date || 
-        !approx_handover_date || !project_code || !stage || !project_type || !status || !logo || !architect_drawing_file) {
+        !approx_handover_date || !stage || !project_type || !status || !logo || !architect_drawing_file) {
       return res.status(400).json({ success: false, message: "All fields are required" });
     }
 
