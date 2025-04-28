@@ -87,7 +87,6 @@ export const updateProject = async (id, projectData) => {
     contact_number,
     project_start_date,
     approx_handover_date,
-    project_code,
     stage,
     project_type,
     status,
@@ -97,7 +96,7 @@ export const updateProject = async (id, projectData) => {
 
   let sql = `UPDATE projects SET 
     company_id=?, project_name=?, location=?, contact_number=?, project_start_date=?, approx_handover_date=?, 
-    project_code=?, stage=?, project_type=?, status=?`;
+    stage=?, project_type=?, status=?`;
 
   const params = [
     company_id,
@@ -106,7 +105,6 @@ export const updateProject = async (id, projectData) => {
     contact_number,
     project_start_date,
     approx_handover_date,
-    project_code,
     stage,
     project_type,
     status,
