@@ -41,20 +41,31 @@ export const getPropertiesById = async (req, res) => {
 //Update property
 export const updateProperties = async (req, res) => {
     try {
-        const property = await getPropertyById(req.params.id); // Get the existing property
+        const propertyId = req.params.id;
+
+        // Fetch the existing property
+        const property = await getPropertyById(propertyId);
         if (!property) {
             return res.status(404).json({ success: false, message: "Property not found" });
         }
 
-        await updateProperty(req.params.id, req.body); // Update the property
+        // Try to update the property using the updateProperty model function
+        const updateResult = await updateProperty(propertyId, req.body);
+        
+        // If the update result contains an error message
+        if (updateResult.status !== 200) {
+            return res.status(updateResult.status).json({ success: false, message: updateResult.message });
+        }
 
-        const updatedProperty = await getPropertyById(req.params.id); // Fetch the updated property
-
-        return res.status(200).json({ success: true, message: "Updated successfully" , property: updatedProperty });
+        // Send the response with the updated property
+        return res.status(200).json({ success: true, message: updateResult.message, property: updateResult.updatedProperty });
+        
     } catch (error) {
+        console.error("Error in updating property:", error);
         return res.status(500).json({ success: false, error: error.message });
     }
 };
+
 
 
 // Delete Property
