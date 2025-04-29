@@ -18,6 +18,7 @@ export default class Building {
     const {
       company_id,
       project_name,
+      building_name,
       site_no,
       avg_flat_size,
       floor_area_size,
@@ -43,14 +44,15 @@ export default class Building {
 
     const sql = `
       INSERT INTO buildings 
-      (company_id, project_name, site_no, building_code, avg_flat_size, floor_area_size, building_height, 
+      (company_id, project_name, building_name, site_no, building_code, avg_flat_size, floor_area_size, building_height, 
        flat_per_floor, piling_type, facing_type, start_date, handover_date, 
        stage, status, architect_file) 
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
 
     return query(sql, [
       company_id,
       project_name,
+      building_name,
       site_no,
       building_code,
       avg_flat_size,
@@ -72,6 +74,7 @@ export default class Building {
     const {
       company_id,
       project_name,
+      building_name,
       site_no,
       avg_flat_size,
       floor_area_size,
@@ -94,7 +97,7 @@ export default class Building {
 
     const sql = `
       UPDATE buildings SET 
-      company_id=?, project_name=?, site_no=?, avg_flat_size=?, floor_area_size=?, building_height=?, 
+      company_id=?, project_name=?, building_name=?, site_no=?, avg_flat_size=?, floor_area_size=?, building_height=?, 
       flat_per_floor=?, piling_type=?, facing_type=?, start_date=?, 
       handover_date=?, stage=?, status=?, architect_file=? 
       WHERE id=?`;
@@ -102,6 +105,7 @@ export default class Building {
     return query(sql, [
       company_id,
       project_name,
+      building_name,
       site_no,
       avg_flat_size,
       floor_area_size,
