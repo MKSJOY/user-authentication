@@ -75,12 +75,12 @@ static async createClient(data) {
     }
 
     // Insert single building association
-    if (building.id && building.site_no) {
+    if (building.id && building.building_name) {
       const buildingSql = `
-        INSERT INTO client_buildings (client_id, building_id, site_no)
+        INSERT INTO client_buildings (client_id, building_id, building_name)
         VALUES (?, ?, ?);
       `;
-      await query(buildingSql, [clientId, building.id, building.site_no]);
+      await query(buildingSql, [clientId, building.id, building.building_name]);
     }
 
     // Insert nominees
@@ -233,7 +233,7 @@ static async updateClient(id, data) {
         n.id AS nominee_id, n.nominee_name, n.nominee_phone, n.nominee_email, 
         n.nominee_nid, n.relation_with_owner,
         p.id AS project_id, p.project_name, 
-        b.id AS building_id, b.site_no
+        b.id AS building_id, b.building_name
       FROM clients c
       LEFT JOIN nominees n ON c.id = n.client_id
       LEFT JOIN client_projects cp ON c.id = cp.client_id
@@ -291,7 +291,7 @@ static async updateClient(id, data) {
       if (row.building_id && !buildingSet.has(row.building_id)) {
         client.buildings.push({
           building_id: row.building_id,
-          site_no: row.site_no
+          building_name: row.building_name
         });
         buildingSet.add(row.building_id);
       }
@@ -308,7 +308,7 @@ static async updateClient(id, data) {
         n.id AS nominee_id, n.nominee_name, n.nominee_phone, n.nominee_email, 
         n.nominee_nid, n.relation_with_owner,
         p.id AS project_id, p.project_name, 
-        b.id AS building_id, b.site_no
+        b.id AS building_id, b.building_name
         FROM clients c
         LEFT JOIN nominees n ON c.id = n.client_id
         LEFT JOIN client_projects cp ON c.id = cp.client_id
@@ -411,7 +411,7 @@ static async updateClient(id, data) {
       if (row.building_id && !buildingSet.has(row.building_id)) {
         currentClient.buildings.push({
           building_id: row.building_id,
-          site_no: row.site_no
+          building_name: row.building_name
         });
         buildingSet.add(row.building_id);
       }
@@ -429,7 +429,7 @@ static async updateClient(id, data) {
       const sql = `
         SELECT 
           p.project_name AS project_name,
-          b.site_no AS site_no
+          b.building_name AS building_name
         FROM clients c
         LEFT JOIN client_projects cp ON c.id = cp.client_id
         LEFT JOIN projects p ON cp.project_id = p.id
@@ -446,7 +446,7 @@ static async updateClient(id, data) {
   
       result.forEach(row => {
         if (row.project_name) projectSet.add(row.project_name);
-        if (row.site_no) buildingSet.add(row.site_no);
+        if (row.building_name) buildingSet.add(row.building_name);
       });
 
       return{
@@ -488,7 +488,7 @@ static async updateClient(id, data) {
     try {
       const sql = `
         SELECT 
-          cb.building_id, b.site_no as site_no
+          cb.building_id, b.building_name as building_name
         FROM client_buildings cb
         LEFT JOIN buildings b ON cb.building_id = b.id
         WHERE cb.client_id = ?
@@ -502,5 +502,7 @@ static async updateClient(id, data) {
     }
   }
   
-}
+  
+  
+  }
   
