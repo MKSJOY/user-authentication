@@ -48,7 +48,8 @@ export const createProjectController = async (req, res) => {
       project_type,
       status,
       logo,                         // string
-      architect_drawing_files       // array of strings
+      architect_drawing_files,      // array of strings,
+      feasibility_study
     } = req.body;
 
     const projectData = {
@@ -61,6 +62,7 @@ export const createProjectController = async (req, res) => {
       stage,
       project_type,
       status,
+      feasibility_study,
       logo,
       architect_drawing_files: Array.isArray(architect_drawing_files)
         ? architect_drawing_files
@@ -94,7 +96,8 @@ export const updateProjectController = async (req, res) => {
       project_type,
       status,
       logo,
-      architect_drawing_files
+      architect_drawing_files,
+      feasibility_study
     } = req.body;
 
     const existingProject = await getProjectById(id);
@@ -112,6 +115,7 @@ export const updateProjectController = async (req, res) => {
       stage,
       project_type,
       status,
+      feasibility_study,
       logo,
       architect_drawing_files: Array.isArray(architect_drawing_files)
         ? architect_drawing_files
