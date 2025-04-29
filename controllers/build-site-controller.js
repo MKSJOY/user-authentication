@@ -15,6 +15,7 @@ export const createBuilding = async (req, res) => {
     const data = {
       company_id: req.body.company_id || null,
       project_name: req.body.project_name || null,
+      building_name: req.body.building_name || null,
       site_no: req.body.site_no || null,
       avg_flat_size: req.body.avg_flat_size || null,
       floor_area_size: req.body.floor_area_size || null,
