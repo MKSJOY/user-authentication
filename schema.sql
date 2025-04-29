@@ -207,3 +207,67 @@ CREATE TABLE suppliers (
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (company_id) REFERENCES companies(id) ON DELETE CASCADE
 );
+
+--work--
+CREATE TABLE work_heads (
+    id CHAR(36) PRIMARY KEY DEFAULT (UUID()),
+    name VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+CREATE TABLE work_details (
+    id CHAR(36) PRIMARY KEY DEFAULT (UUID()),
+    work_head_id CHAR(36) NOT NULL,
+    description VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (work_head_id) REFERENCES work_heads(id) ON DELETE CASCADE
+);
+
+-- budget--
+-- 1. Budgets Table
+CREATE TABLE budgets (
+    id CHAR(36) PRIMARY KEY DEFAULT (UUID()),
+    project_id CHAR(36) NOT NULL,
+    building_id CHAR(36) NOT NULL,
+    date_from DATE NOT NULL,
+    date_to DATE NOT NULL,
+    is_initial_budget BOOLEAN DEFAULT FALSE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 2. Floors Table
+CREATE TABLE floors (
+    id CHAR(36) PRIMARY KEY DEFAULT (UUID()),
+    budget_id CHAR(36) NOT NULL,
+    floor_name VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (budget_id) REFERENCES budgets(id) ON DELETE CASCADE
+);
+
+-- 3. Work Types Table
+CREATE TABLE work_types (
+    id CHAR(36) PRIMARY KEY DEFAULT (UUID()),
+    floor_id CHAR(36) NOT NULL,
+    budget_id CHAR(36) NOT NULL, -- Add budget_id here
+    work_type VARCHAR(255) NOT NULL,
+    start_date DATE,
+    end_date DATE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (floor_id) REFERENCES floors(id) ON DELETE CASCADE,
+    FOREIGN KEY (budget_id) REFERENCES budgets(id) ON DELETE CASCADE
+);
+
+-- 4. Budget Heads Table
+CREATE TABLE budget_heads (
+    id CHAR(36) PRIMARY KEY DEFAULT (UUID()),
+    work_type_id CHAR(36) NOT NULL,
+    budget_id CHAR(36) NOT NULL, -- Add budget_id here
+    budget_head VARCHAR(255) NOT NULL,
+    unit VARCHAR(50),
+    dia VARCHAR(50),
+    quantity DECIMAL(10,2),
+    rate DECIMAL(10,2),
+    amount DECIMAL(10,2) GENERATED ALWAYS AS (quantity * rate) STORED,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (work_type_id) REFERENCES work_types(id) ON DELETE CASCADE,
+    FOREIGN KEY (budget_id) REFERENCES budgets(id) ON DELETE CASCADE
+);

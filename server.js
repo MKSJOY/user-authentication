@@ -18,6 +18,10 @@ import { companyUserRoutes } from "./routes/company-userID.js";
 import { expenseRoutes } from "./routes/expense.js";
 import { receiptVoucherRoutes } from "./routes/receipt-voucher.js";
 import supplierRoutes from "./routes/supplierRoutes.js";
+import { router as workHeadRoutes } from "./routes/workHeadRoutes.js";
+import { workDetailsRoutes } from "./routes/workDetailsRoutes.js";
+import { budgetRoutes } from "./routes/budgetRoutes.js";
+
 
 
 dotenv.config(); // Load .env variables at the top
@@ -63,6 +67,9 @@ app.use("/api/plots", authMiddleware, plotRoutes);
 app.use("/api/expenses", authMiddleware, expenseRoutes); // Expense 
 app.use("/api/receipt-voucher", authMiddleware, receiptVoucherRoutes); //receipt-voucher
 app.use("/api/suppliers", supplierRoutes); //supplier
+app.use("/api/work-heads", authMiddleware, workHeadRoutes);
+app.use("/api/work-details",authMiddleware, workDetailsRoutes);
+app.use("/api/budgets", authMiddleware, budgetRoutes);  // Budget routes
 
 
 // Error handling middleware
