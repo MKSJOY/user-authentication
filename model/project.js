@@ -45,7 +45,8 @@ export const createProject = async (projectData) => {
     project_type,
     status,
     logo,
-    architect_drawing_files = [], // Default to an empty array
+    architect_drawing_files = [],
+    feasibility_study,
   } = projectData;
 
   let project_code = generateProjectCode(); // Generate a new project code
@@ -57,8 +58,8 @@ export const createProject = async (projectData) => {
 
   const sql = `INSERT INTO projects 
     (company_id, project_name, location, contact_number, project_start_date, approx_handover_date, 
-    project_code, stage, project_type, status, logo, architect_drawing_file) 
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+    project_code, stage, project_type, status, logo, architect_drawing_file, feasibility_study) 
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
 
   const params = [
     company_id,
@@ -73,6 +74,7 @@ export const createProject = async (projectData) => {
     status,
     logo,
     JSON.stringify(architect_drawing_files), // store multiple file paths as a JSON array
+    feasibility_study,
   ];
 
   return await query(sql, params);
@@ -87,16 +89,18 @@ export const updateProject = async (id, projectData) => {
     contact_number,
     project_start_date,
     approx_handover_date,
+    project_code,
     stage,
     project_type,
     status,
     logo,
     architect_drawing_files = [], // Default to an empty array
+    feasibility_study,
   } = projectData;
 
   let sql = `UPDATE projects SET 
     company_id=?, project_name=?, location=?, contact_number=?, project_start_date=?, approx_handover_date=?, 
-    stage=?, project_type=?, status=?`;
+    project_code=?, stage=?, project_type=?, status=?, feasibility_study=?`;
 
   const params = [
     company_id,
@@ -105,9 +109,11 @@ export const updateProject = async (id, projectData) => {
     contact_number,
     project_start_date,
     approx_handover_date,
+    project_code,
     stage,
     project_type,
     status,
+    feasibility_study,
   ];
 
   if (logo) {
