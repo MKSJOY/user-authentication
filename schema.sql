@@ -271,3 +271,30 @@ CREATE TABLE budget_heads (
     FOREIGN KEY (work_type_id) REFERENCES work_types(id) ON DELETE CASCADE,
     FOREIGN KEY (budget_id) REFERENCES budgets(id) ON DELETE CASCADE
 );
+
+--schedule--
+CREATE TABLE work_schedules (
+    id CHAR(36) PRIMARY KEY DEFAULT (UUID()),
+    project_id CHAR(36) NOT NULL,
+    building_id CHAR(36) NOT NULL,
+    description TEXT,
+    schedule_month INT,
+    schedule_year INT,
+    schedule_date DATE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (project_id) REFERENCES projects(id),
+    FOREIGN KEY (building_id) REFERENCES buildings(id)
+);
+
+CREATE TABLE schedule_items (
+    id CHAR(36) PRIMARY KEY DEFAULT (UUID()),
+    schedule_id CHAR(36) NOT NULL,
+    work_head_id CHAR(36) NOT NULL,
+    work_detail_id CHAR(36) NOT NULL,
+    start_date DATE,
+    end_date DATE,
+    work_volume DECIMAL(10,2),
+    FOREIGN KEY (schedule_id) REFERENCES work_schedules(id) ON DELETE CASCADE,
+    FOREIGN KEY (work_head_id) REFERENCES work_heads(id),
+    FOREIGN KEY (work_detail_id) REFERENCES work_details(id)
+);
