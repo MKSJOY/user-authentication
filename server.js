@@ -22,6 +22,7 @@ import { router as workHeadRoutes } from "./routes/workHeadRoutes.js";
 import { workDetailsRoutes } from "./routes/workDetailsRoutes.js";
 import { budgetRoutes } from "./routes/budgetRoutes.js";
 import { scheduleRoutes } from "./routes/scheduleRoutes.js";
+import requisitionRoutes from "./routes/requisitionRoutes.js";
 
 
 
@@ -72,6 +73,7 @@ app.use("/api/work-heads", authMiddleware, workHeadRoutes);
 app.use("/api/work-details",authMiddleware, workDetailsRoutes);
 app.use("/api/budgets", authMiddleware, budgetRoutes);  // Budget routes
 app.use("/api/schedules", authMiddleware, scheduleRoutes); // Schedule Routes
+app.use("/api/requisitions", authMiddleware, requisitionRoutes);
 
 // Error handling middleware
 app.use(errorHandler);

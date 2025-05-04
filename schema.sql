@@ -298,3 +298,33 @@ CREATE TABLE schedule_items (
     FOREIGN KEY (work_head_id) REFERENCES work_heads(id),
     FOREIGN KEY (work_detail_id) REFERENCES work_details(id)
 );
+
+-- status ENUM('pending', 'approved', 'rejected') DEFAULT 'pending',--
+
+-- Requisitions--
+CREATE TABLE requisitions (
+    id CHAR(36) PRIMARY KEY DEFAULT (UUID()),
+    requisition_type ENUM('Flat/Apartment', 'Other') NOT NULL,
+    requisition_purpose TEXT,
+    note TEXT,
+    project_id CHAR(36) NOT NULL,
+    building_id CHAR(36) NOT NULL,
+    requisition_date DATE NOT NULL,
+    required_date DATE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    
+    FOREIGN KEY (project_id) REFERENCES projects(id),
+    FOREIGN KEY (building_id) REFERENCES buildings(id)
+);
+
+CREATE TABLE requisition_items (
+    id CHAR(36) PRIMARY KEY DEFAULT (UUID()),
+    requisition_id CHAR(36) NOT NULL,
+    product_name VARCHAR(255) NOT NULL,
+    category_name VARCHAR(255),
+    product_unit VARCHAR(100),
+    quantity DECIMAL(10,2) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    FOREIGN KEY (requisition_id) REFERENCES requisitions(id) ON DELETE CASCADE
+);
