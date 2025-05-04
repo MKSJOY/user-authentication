@@ -23,6 +23,7 @@ import { workDetailsRoutes } from "./routes/workDetailsRoutes.js";
 import { budgetRoutes } from "./routes/budgetRoutes.js";
 import { scheduleRoutes } from "./routes/scheduleRoutes.js";
 import requisitionRoutes from "./routes/requisitionRoutes.js";
+import purchaseOrderRoutes from "./routes/purchaseOrderRoutes.js";
 
 
 
@@ -68,12 +69,13 @@ app.use("/api/project-type", authMiddleware, projectTypeRoutes); // Project type
 app.use("/api/plots", authMiddleware, plotRoutes);
 app.use("/api/expenses", authMiddleware, expenseRoutes); // Expense 
 app.use("/api/receipt-voucher", authMiddleware, receiptVoucherRoutes); //receipt-voucher
-app.use("/api/suppliers", supplierRoutes); //supplier
+app.use("/api/suppliers", authMiddleware,supplierRoutes); //supplier
 app.use("/api/work-heads", authMiddleware, workHeadRoutes);
 app.use("/api/work-details",authMiddleware, workDetailsRoutes);
 app.use("/api/budgets", authMiddleware, budgetRoutes);  // Budget routes
 app.use("/api/schedules", authMiddleware, scheduleRoutes); // Schedule Routes
-app.use("/api/requisitions", authMiddleware, requisitionRoutes);
+app.use("/api/requisitions", authMiddleware, requisitionRoutes); // requisitions
+app.use("/api/purchase-orders", authMiddleware, purchaseOrderRoutes); //purchase-orders
 
 // Error handling middleware
 app.use(errorHandler);
