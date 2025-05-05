@@ -24,6 +24,8 @@ import { budgetRoutes } from "./routes/budgetRoutes.js";
 import { scheduleRoutes } from "./routes/scheduleRoutes.js";
 import requisitionRoutes from "./routes/requisitionRoutes.js";
 import purchaseOrderRoutes from "./routes/purchaseOrderRoutes.js";
+import purchaseReturnRoutes from "./routes/purchaseReturnRoutes.js";
+
 
 
 
@@ -76,6 +78,7 @@ app.use("/api/budgets", authMiddleware, budgetRoutes);  // Budget routes
 app.use("/api/schedules", authMiddleware, scheduleRoutes); // Schedule Routes
 app.use("/api/requisitions", authMiddleware, requisitionRoutes); // requisitions
 app.use("/api/purchase-orders", authMiddleware, purchaseOrderRoutes); //purchase-orders
+app.use("/api/purchase-returns", authMiddleware, purchaseReturnRoutes); //Purchase-Returns
 
 // Error handling middleware
 app.use(errorHandler);

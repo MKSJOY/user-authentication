@@ -328,3 +328,37 @@ CREATE TABLE requisition_items (
 
     FOREIGN KEY (requisition_id) REFERENCES requisitions(id) ON DELETE CASCADE
 );
+
+
+   --Purchase Orders--
+   
+CREATE TABLE purchase_orders (
+    id CHAR(36) PRIMARY KEY DEFAULT (UUID()),
+    requisition_id CHAR(36), -- Optional, for non-property purchase
+    property_id CHAR(36), -- Optional, if Buy Property is checked
+    is_buy_property BOOLEAN DEFAULT FALSE,
+    -- Land/property specific details
+    land_name VARCHAR(255),
+    land_property_id VARCHAR(255),
+    location TEXT,
+    cs_dag_no VARCHAR(100),
+    mouja_name VARCHAR(255),
+    -- Owner info
+    owner_name VARCHAR(255),
+    owner_id VARCHAR(36),
+    contact_no VARCHAR(50),
+    nid_no VARCHAR(50),
+    -- Financial summary
+    total_amount DECIMAL(12, 2) DEFAULT 0.00,
+    discount DECIMAL(12, 2) DEFAULT 0.00,
+    vat_tax DECIMAL(12, 2) DEFAULT 0.00,
+    -- Basic Information
+    payment_date DATE,
+    pay_amount DECIMAL(12, 2),
+    payment_type ENUM('Cash', 'Bank', 'Cheque') DEFAULT 'Cash',
+    attachment_file VARCHAR(255),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (requisition_id) REFERENCES requisitions(id) ON DELETE SET NULL,
+    FOREIGN KEY (property_id) REFERENCES properties(id) ON DELETE SET NULL
+);
