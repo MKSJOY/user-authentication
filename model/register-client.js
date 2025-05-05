@@ -9,119 +9,127 @@ const generateClientCode = () => {
 
 export default class Client {
   // Method to create a new client along with multiple nominees, projects, and buildings
-static async createClient(data) {
+  static async createClient(data) {
     const {
-    company_id, name, father_name, mother_name, date_of_birth,
-    marriage_anniversary_date, occupation, religion, nationality, phone_number, email, tin_number,
-    nid_number, nominees = [], project = {}, building = {},
-    present_village, present_post_code, present_police_station, present_district, present_address_1,
-    present_address_2, permanent_village, permanent_post_code, permanent_police_station,
-    permanent_district, permanent_address_1, permanent_address_2, account_name, bank_name,
-    branch_name, ac_no, routing_no, bkash, nagad, rocket, dutch_bangla, share, flat_or_apartment,
-    lottery_number, national_id_file, passport_file, tin_file, photo_file,
-   } = data;
-
-  const client_code = generateClientCode(); // Generate client_code
-
-  const clientValues = [
-    company_id ?? null, name ?? null, father_name ?? null, mother_name ?? null, date_of_birth ?? null,
-    marriage_anniversary_date ?? null, occupation ?? null, religion ?? null, nationality ?? null,
-    phone_number ?? null, email ?? null, tin_number ?? null, nid_number ?? null, present_village ?? null,
-    present_post_code ?? null, present_police_station ?? null, present_district ?? null, present_address_1 ?? null,
-    present_address_2 ?? null, permanent_village ?? null, permanent_post_code ?? null, permanent_police_station ?? null,
-    permanent_district ?? null, permanent_address_1 ?? null, permanent_address_2 ?? null, account_name ?? null,
-    bank_name ?? null, branch_name ?? null, ac_no ?? null, routing_no ?? null, bkash ?? null, nagad ?? null,
-    rocket ?? null, dutch_bangla ?? null, share ?? null, flat_or_apartment ?? null, lottery_number ?? null,
-    national_id_file ?? null, passport_file ?? null, tin_file ?? null, photo_file ?? null, client_code // Add client_code here
-  ];
-
-  try {
-    // Get the next serial number safely
-    const serialResult = await query(`SELECT COALESCE(MAX(serial_no), 0) + 1 AS next_serial FROM clients`);
-    const next_serial = serialResult[0]?.next_serial ?? 1;
-
-    // Insert the client
-    const insertSql = `
-      INSERT INTO clients (
-        serial_no, company_id, name, father_name, mother_name, date_of_birth,
-        marriage_anniversary_date, occupation, religion, nationality, phone_number, email, tin_number,
-        nid_number, present_village, present_post_code, present_police_station, present_district,
-        present_address_1, present_address_2, permanent_village, permanent_post_code, permanent_police_station,
-        permanent_district, permanent_address_1, permanent_address_2, account_name, bank_name,
-        branch_name, ac_no, routing_no, bkash, nagad, rocket, dutch_bangla, share, flat_or_apartment,
-        lottery_number, national_id_file, passport_file, tin_file, photo_file, client_code
-      ) VALUES (
-        ?, ${clientValues.map(() => '?').join(', ')}
-      )
-    `;
-
-    const insertResult = await query(insertSql, [next_serial, ...clientValues]);
-    if (insertResult.affectedRows === 0) {
-      throw new Error("Client insertion failed.");
-    }
-
-    // Get the last inserted client ID
-    const clientResult = await query("SELECT id FROM clients ORDER BY created_at DESC LIMIT 1");
-    const clientId = clientResult[0]?.id;
-    if (!clientId) throw new Error("Client ID not found after insert.");
-
-    // Insert single project association
-    if (project.id && project.name) {
-      const projectSql = `
-        INSERT INTO client_projects (client_id, project_id, project_name)
-        VALUES (?, ?, ?);
+      company_id, name, father_name, mother_name, date_of_birth,
+      marriage_anniversary_date, occupation, religion, nationality, phone_number, email, tin_number,
+      nid_number, nominees = [], project = {}, building = {},
+      present_village, present_post_code, present_police_station, present_district, present_address_1,
+      present_address_2, permanent_village, permanent_post_code, permanent_police_station,
+      permanent_district, permanent_address_1, permanent_address_2, account_name, bank_name,
+      branch_name, ac_no, routing_no, bkash, nagad, rocket, dutch_bangla,
+      properties = [], // <- comes as array of objects [{lottery_number, flat_or_apartment}]
+      national_id_file, passport_file, tin_file, photo_file
+    } = data;
+  
+    const client_code = generateClientCode();
+  
+    // Calculate share based on valid property entries
+    const validProperties = properties.filter(
+      p => p.lottery_number && p.flat_or_apartment
+    );
+    const share = validProperties.length || 1;
+  
+    const clientValues = [
+      company_id ?? null, name ?? null, father_name ?? null, mother_name ?? null, date_of_birth ?? null,
+      marriage_anniversary_date ?? null, occupation ?? null, religion ?? null, nationality ?? null,
+      phone_number ?? null, email ?? null, tin_number ?? null, nid_number ?? null, present_village ?? null,
+      present_post_code ?? null, present_police_station ?? null, present_district ?? null, present_address_1 ?? null,
+      present_address_2 ?? null, permanent_village ?? null, permanent_post_code ?? null, permanent_police_station ?? null,
+      permanent_district ?? null, permanent_address_1 ?? null, permanent_address_2 ?? null, account_name ?? null,
+      bank_name ?? null, branch_name ?? null, ac_no ?? null, routing_no ?? null, bkash ?? null, nagad ?? null,
+      rocket ?? null, dutch_bangla ?? null, share,
+      JSON.stringify(validProperties), // store full array of objects
+      national_id_file ?? null, passport_file ?? null, tin_file ?? null, photo_file ?? null, client_code
+    ];
+  
+    try {
+      const serialResult = await query(`SELECT COALESCE(MAX(serial_no), 0) + 1 AS next_serial FROM clients`);
+      const next_serial = serialResult[0]?.next_serial ?? 1;
+  
+      const insertSql = `
+        INSERT INTO clients (
+          serial_no, company_id, name, father_name, mother_name, date_of_birth,
+          marriage_anniversary_date, occupation, religion, nationality, phone_number, email, tin_number,
+          nid_number, present_village, present_post_code, present_police_station, present_district,
+          present_address_1, present_address_2, permanent_village, permanent_post_code, permanent_police_station,
+          permanent_district, permanent_address_1, permanent_address_2, account_name, bank_name,
+          branch_name, ac_no, routing_no, bkash, nagad, rocket, dutch_bangla, share,
+          properties, national_id_file, passport_file, tin_file, photo_file, client_code
+        ) VALUES (
+          ?, ${clientValues.map(() => '?').join(', ')}
+        )
       `;
-      await query(projectSql, [clientId, project.id, project.name]);
+
+
+      const insertResult = await query(insertSql, [next_serial, ...clientValues]);
+      if (insertResult.affectedRows === 0) throw new Error("Client insertion failed.");
+
+      const clientResult = await query("SELECT id FROM clients ORDER BY created_at DESC LIMIT 1");
+      const clientId = clientResult[0]?.id;
+      if (!clientId) throw new Error("Client ID not found after insert.");
+
+      if (project.id && project.name) {
+        await query(
+          `INSERT INTO client_projects (client_id, project_id, project_name) VALUES (?, ?, ?)`,
+          [clientId, project.id, project.name]
+        );
+      }
+
+      if (building.id && building.building_name) {
+        await query(
+          `INSERT INTO client_buildings (client_id, building_id, building_name) VALUES (?, ?, ?)`,
+          [clientId, building.id, building.building_name]
+        );
+      }
+
+      if (Array.isArray(nominees) && nominees.length > 0) {
+        const nomineeValues = nominees.map(n => [
+          clientId,
+          n.nominee_name ?? null,
+          n.nominee_phone ?? null,
+          n.nominee_email ?? null,
+          n.nominee_nid ?? null,
+          n.relation_with_owner ?? null
+        ]);
+
+        const nomineeSql = `
+          INSERT INTO nominees (client_id, nominee_name, nominee_phone, nominee_email, nominee_nid, relation_with_owner)
+          VALUES ${nomineeValues.map(() => '(?, ?, ?, ?, ?, ?)').join(', ')};
+        `;
+        await query(nomineeSql, nomineeValues.flat());
+      }
+
+      // Optionally, insert flat_or_apartment and lottery_number in their own table
+      // if needed later for normalization
+
+      return { success: true, message: "Client created successfully", client_id: clientId };
+    } catch (error) {
+      console.error("Client creation error:", error);
+      return { success: false, message: "Client creation failed", error: error.message };
     }
-
-    // Insert single building association
-    if (building.id && building.building_name) {
-      const buildingSql = `
-        INSERT INTO client_buildings (client_id, building_id, building_name)
-        VALUES (?, ?, ?);
-      `;
-      await query(buildingSql, [clientId, building.id, building.building_name]);
-    }
-
-    // Insert nominees
-    if (Array.isArray(nominees) && nominees.length > 0) {
-      const nomineeValues = nominees.map(n => [
-        clientId,
-        n.nominee_name ?? null,
-        n.nominee_phone ?? null,
-        n.nominee_email ?? null,
-        n.nominee_nid ?? null,
-        n.relation_with_owner ?? null
-      ]);
-
-      const nomineeSql = `
-        INSERT INTO nominees (client_id, nominee_name, nominee_phone, nominee_email, nominee_nid, relation_with_owner)
-        VALUES ${nomineeValues.map(() => '(?, ?, ?, ?, ?, ?)').join(', ')};
-      `;
-      await query(nomineeSql, nomineeValues.flat());
-    }
-
-    return { success: true, message: "Client created successfully", client_id: clientId };
-  } catch (error) {
-    console.error("Client creation error:", error);
-    return { success: false, message: "Client creation failed", error: error.message };
   }
-}
 
 
 
-
-  // Method to update an existing client and their nominees
+// Method to update an existing client and their nominees
 static async updateClient(id, data) {
   const client = await Client.getClientById(id);
   if (client.length === 0) throw new Error("Client not found");
-  
+
   const national_id_file = data.national_id_file ?? client[0].national_id_file;
   const passport_file = data.passport_file ?? client[0].passport_file;
   const tin_file = data.tin_file ?? client[0].tin_file;
   const photo_file = data.photo_file ?? client[0].photo_file;
-  
-  // Update client details
+
+  // Calculate share based on valid property entries
+  const properties = data.properties ?? [];
+  const validProperties = properties.filter(
+    p => p.lottery_number && p.flat_or_apartment
+  );
+  const share = validProperties.length || 1;
+
+  // Update client details without flat_or_apartment and lottery_number
   const sql = `
     UPDATE clients SET
       company_id = ?, name = ?, father_name = ?, mother_name = ?,
@@ -131,7 +139,7 @@ static async updateClient(id, data) {
       present_address_2 = ?, permanent_village = ?, permanent_post_code = ?, permanent_police_station = ?,
       permanent_district = ?, permanent_address_1 = ?, permanent_address_2 = ?, account_name = ?,
       bank_name = ?, branch_name = ?, ac_no = ?, routing_no = ?, bkash = ?, nagad = ?, rocket = ?,
-      dutch_bangla = ?, share = ?, flat_or_apartment = ?, lottery_number = ?,
+      dutch_bangla = ?, share = ?, properties = ?, 
       national_id_file = ?, passport_file = ?, tin_file = ?, photo_file = ?
     WHERE id = ?;
   `;
@@ -139,77 +147,61 @@ static async updateClient(id, data) {
   const values = [
     data.company_id ?? null, data.name ?? null,
     data.father_name ?? null, data.mother_name ?? null, data.date_of_birth ?? null, data.marriage_anniversary_date ?? null,
-    data.occupation ?? null, data.religion ?? null, data.nationality ?? null, data.phone_number ?? null, 
-    data.email ?? null, data.tin_number ?? null, data.nid_number ?? null, data.present_village ?? null, 
+    data.occupation ?? null, data.religion ?? null, data.nationality ?? null, data.phone_number ?? null,
+    data.email ?? null, data.tin_number ?? null, data.nid_number ?? null, data.present_village ?? null,
     data.present_post_code ?? null, data.present_police_station ?? null, data.present_district ?? null,
-    data.present_address_1 ?? null, data.present_address_2 ?? null, data.permanent_village ?? null, 
+    data.present_address_1 ?? null, data.present_address_2 ?? null, data.permanent_village ?? null,
     data.permanent_post_code ?? null, data.permanent_police_station ?? null, data.permanent_district ?? null,
     data.permanent_address_1 ?? null, data.permanent_address_2 ?? null, data.account_name ?? null,
-    data.bank_name ?? null, data.branch_name ?? null, data.ac_no ?? null, data.routing_no ?? null, 
-    data.bkash ?? null, data.nagad ?? null, data.rocket ?? null, data.dutch_bangla ?? null, data.share ?? null,
-    data.flat_or_apartment ?? null, data.lottery_number ?? null, national_id_file ?? null, passport_file ?? null,
-    tin_file ?? null, photo_file ?? null, id
+    data.bank_name ?? null, data.branch_name ?? null, data.ac_no ?? null, data.routing_no ?? null,
+    data.bkash ?? null, data.nagad ?? null, data.rocket ?? null, data.dutch_bangla ?? null,
+    share, JSON.stringify(validProperties),
+    national_id_file ?? null, passport_file ?? null, tin_file ?? null, photo_file ?? null, id
   ];
-  
+
   const result = await query(sql, values);
-  
-  // Update serial_no (if needed)
+
+  // Optional serial_no update
   if (data.serial_no) {
-    const serialUpdateSql = `
-      UPDATE clients
-      SET serial_no = ?
-      WHERE id = ?;
-    `;
-    await query(serialUpdateSql, [data.serial_no, id]);
+    await query(`UPDATE clients SET serial_no = ? WHERE id = ?`, [data.serial_no, id]);
   }
-  
-  // Update client-project associations
-  if (data.project_ids && data.project_ids.length > 0) {
-    // Remove existing project associations
+
+  // Project associations
+  if (data.project_ids?.length) {
     await query(`DELETE FROM client_projects WHERE client_id = ?`, [id]);
-  
-    // Insert new project associations
-    const projectValues = data.project_ids.map(project_id => [id, project_id]);
-    const projectSql = `
+    const projectValues = data.project_ids.map(pid => [id, pid]);
+    await query(`
       INSERT INTO client_projects (client_id, project_id)
       VALUES ${projectValues.map(() => '(?, ?)').join(', ')};
-    `;
-    await query(projectSql, projectValues.flat());
+    `, projectValues.flat());
   }
-  
-  // Update client-building associations
-  if (data.building_ids && data.building_ids.length > 0) {
-    // Remove existing building associations
+
+  // Building associations
+  if (data.building_ids?.length) {
     await query(`DELETE FROM client_buildings WHERE client_id = ?`, [id]);
-  
-    // Insert new building associations
-    const buildingValues = data.building_ids.map(building_id => [id, building_id]);
-    const buildingSql = `
+    const buildingValues = data.building_ids.map(bid => [id, bid]);
+    await query(`
       INSERT INTO client_buildings (client_id, building_id)
       VALUES ${buildingValues.map(() => '(?, ?)').join(', ')};
-    `;
-    await query(buildingSql, buildingValues.flat());
+    `, buildingValues.flat());
   }
-  
-  // Update nominees if provided
-  if (data.nominees && data.nominees.length > 0) {
-    // Remove existing nominees
+
+  // Nominees
+  if (data.nominees?.length) {
     await query(`DELETE FROM nominees WHERE client_id = ?`, [id]);
-    
-    // Insert new nominees
     const nomineeValues = data.nominees.map(n => [
-      id, n.nominee_name ?? null, n.nominee_phone ?? null, n.nominee_email ?? null, n.nominee_nid ?? null,
-      n.relation_with_owner ?? null
+      id, n.nominee_name ?? null, n.nominee_phone ?? null, n.nominee_email ?? null,
+      n.nominee_nid ?? null, n.relation_with_owner ?? null
     ]);
-    const nomineeSql = `
+    await query(`
       INSERT INTO nominees (client_id, nominee_name, nominee_phone, nominee_email, nominee_nid, relation_with_owner)
       VALUES ${nomineeValues.map(() => '(?, ?, ?, ?, ?, ?)').join(', ')};
-    `;
-    await query(nomineeSql, nomineeValues.flat());
+    `, nomineeValues.flat());
   }
-  
+
   return result;
 }
+
 
 
    // Method to delete a client and their nominees
@@ -301,7 +293,7 @@ static async updateClient(id, data) {
   }
   
 
-
+   //GET ALL CLIENTS
    static async getAllClients() {
         const sql = ` 
         SELECT c.*, 
@@ -376,8 +368,7 @@ static async updateClient(id, data) {
           rocket: row.rocket,
           dutch_bangla: row.dutch_bangla,
           share: row.share,
-          flat_or_apartment: row.flat_or_apartment,
-          lottery_number: row.lottery_number,
+          properties: row.properties,
           national_id_file: row.national_id_file,
           passport_file: row.passport_file,
           tin_file: row.tin_file,
@@ -500,9 +491,6 @@ static async updateClient(id, data) {
       //console.error("Error fetching buildings:", err);
       throw new Error("Error fetching buildings by client");
     }
-  }
-  
-  
-  
+   }
   }
   
