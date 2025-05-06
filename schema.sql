@@ -54,6 +54,13 @@ CREATE TABLE projects (
   FOREIGN KEY (company_id) REFERENCES companies(id) ON DELETE CASCADE
 );
 
+-- project type--
+CREATE TABLE project_types (
+    id CHAR(36) PRIMARY KEY DEFAULT (UUID()), -- UUID for id
+    type_name VARCHAR(255) NOT NULL UNIQUE,
+    code VARCHAR(50) NOT NULL UNIQUE
+);
+
 
 CREATE TABLE buildings (
   id CHAR(36) PRIMARY KEY DEFAULT (UUID()), -- UUID for id
@@ -361,4 +368,38 @@ CREATE TABLE purchase_orders (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (requisition_id) REFERENCES requisitions(id) ON DELETE SET NULL,
     FOREIGN KEY (property_id) REFERENCES properties(id) ON DELETE SET NULL
+);
+
+
+-- building_products--
+CREATE TABLE building_products (
+  id CHAR(36) PRIMARY KEY DEFAULT (UUID()),
+  project_id CHAR(36) NOT NULL,
+  building_id CHAR(36) NOT NULL,
+  project_type_id CHAR(36) NOT NULL, -- e.g., Flat, Duplex, etc.
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE,
+  FOREIGN KEY (building_id) REFERENCES buildings(id) ON DELETE CASCADE,
+  FOREIGN KEY (project_type_id) REFERENCES project_types(id)
+);
+
+REATE TABLE product_floors (
+  id CHAR(36) PRIMARY KEY DEFAULT (UUID()),
+  product_id CHAR(36) NOT NULL,
+  floor_number VARCHAR(50) NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  FOREIGN KEY (product_id) REFERENCES building_products(id) ON DELETE CASCADE
+);
+
+CREATE TABLE floor_units (
+  id CHAR(36) PRIMARY KEY DEFAULT (UUID()),
+  floor_id CHAR(36) NOT NULL,
+  unit_name VARCHAR(50) NOT NULL,   -- A, B, C
+  size FLOAT NOT NULL,
+  facing VARCHAR(50) NOT NULL,      -- Or FK to a facing table
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  FOREIGN KEY (floor_id) REFERENCES product_floors(id) ON DELETE CASCADE
 );
