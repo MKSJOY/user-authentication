@@ -1,9 +1,9 @@
+
 import mysql from "mysql2/promise";
 import dotenv from "dotenv";
 import fs from "fs";
 
 dotenv.config();
-
 const pool = mysql.createPool({
   host: process.env.DB_HOST,
   user: process.env.DB_USER,
@@ -13,7 +13,7 @@ const pool = mysql.createPool({
     ca: fs.readFileSync(process.env.SSL_CA_PATH),
   },
   waitForConnections: true,
-  connectionLimit: 10,
+  connectionLimit: 20,
   queueLimit: 0,
   enableKeepAlive: true,              // ✅
   keepAliveInitialDelay: 10000,       // ✅
@@ -30,3 +30,4 @@ export const query = async (sql, params) => {
     throw error;
   }
 };
+

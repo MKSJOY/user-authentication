@@ -83,6 +83,62 @@ CREATE TABLE buildings (
   FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE
 ) ENGINE=InnoDB;
 
+--client 
+CREATE TABLE clients (
+  id CHAR(36) PRIMARY KEY DEFAULT (UUID()),
+  company_id CHAR(36) NOT NULL,
+  project_name VARCHAR(255) NOT NULL,
+  building_site VARCHAR(255) NOT NULL,
+  name VARCHAR(255) NOT NULL,
+  father_name VARCHAR(255) NOT NULL,
+  mother_name VARCHAR(255) NOT NULL,
+  date_of_birth DATE NOT NULL,
+  marriage_anniversary_date DATE NOT NULL,
+  occupation VARCHAR(255) NOT NULL,
+  religion VARCHAR(255) NOT NULL,
+  nationality VARCHAR(255) NOT NULL,
+  phone_number VARCHAR(20) NOT NULL,
+  email VARCHAR(255) NOT NULL,
+  tin_number VARCHAR(50) NOT NULL,
+  nid_number VARCHAR(50) NOT NULL,
+  nominee_name VARCHAR(255) NOT NULL,
+  nominee_phone VARCHAR(20) NOT NULL,
+  nominee_email VARCHAR(255) NOT NULL,
+  nominee_nid VARCHAR(50) NOT NULL,
+  relation_with_owner VARCHAR(255) NOT NULL,
+  present_village VARCHAR(255) NOT NULL,
+  present_post_code VARCHAR(10) NOT NULL,
+  present_police_station VARCHAR(255) NOT NULL,
+  present_district VARCHAR(255) NOT NULL,
+  present_address_1 VARCHAR(255) NOT NULL,
+  present_address_2 VARCHAR(255) NOT NULL,
+  permanent_village VARCHAR(255) NOT NULL,
+  permanent_post_code VARCHAR(10) NOT NULL,
+  permanent_police_station VARCHAR(255) NOT NULL,
+  permanent_district VARCHAR(255) NOT NULL,
+  permanent_address_1 VARCHAR(255) NOT NULL,
+  permanent_address_2 VARCHAR(255) NOT NULL,
+  account_name VARCHAR(255) NOT NULL,
+  bank_name VARCHAR(255) NOT NULL,
+  branch_name VARCHAR(255) NOT NULL,
+  ac_no VARCHAR(50) NOT NULL,
+  routing_no VARCHAR(50) NOT NULL,
+  bkash VARCHAR(20) NOT NULL,
+  nagad VARCHAR(20) NOT NULL,
+  rocket VARCHAR(20) NOT NULL,
+  dutch_bangla VARCHAR(20) NOT NULL,
+  share VARCHAR(10) NOT NULL,
+  flat_or_apartment VARCHAR(50) NOT NULL,
+  lottery_number VARCHAR(50) NOT NULL,
+  national_id_file VARCHAR(255) NOT NULL,
+  passport_file VARCHAR(255) NOT NULL,
+  tin_file VARCHAR(255) NOT NULL,
+  photo_file VARCHAR(255) NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  FOREIGN KEY (company_id) REFERENCES companies(id) ON DELETE CASCADE
+);
+
 -- ReceiptVoucher --
 CREATE TABLE receipt_vouchers (
     id CHAR(36) PRIMARY KEY DEFAULT (UUID()),
@@ -402,4 +458,24 @@ CREATE TABLE floor_units (
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   FOREIGN KEY (floor_id) REFERENCES product_floors(id) ON DELETE CASCADE
+);
+
+CREATE TABLE construction_payments (
+  id CHAR(36) PRIMARY KEY DEFAULT (UUID()),
+  project_id CHAR(36) NOT NULL,
+  building_id CHAR(36) NOT NULL,
+  client_id CHAR(36) NOT NULL, -- Foreign key to clients(id)
+  payment_date DATE NOT NULL,
+  total_amount DECIMAL(10, 2) NOT NULL,
+  received_amount DECIMAL(10, 2) NOT NULL,
+  purpose VARCHAR(255),
+  payment_type ENUM('Cash', 'Bank', 'Online', 'Other') NOT NULL,
+  manual_invoice_no VARCHAR(100),
+  reference_invoice_code VARCHAR(100), -- Optional, e.g., "#INV-SRA-1-2-0007"
+  received_by VARCHAR(255) NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE,
+  FOREIGN KEY (building_id) REFERENCES buildings(id) ON DELETE CASCADE,
+  FOREIGN KEY (client_id) REFERENCES clients(id) ON DELETE CASCADE
 );
