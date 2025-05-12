@@ -28,7 +28,8 @@ import purchaseReturnRoutes from "./routes/purchaseReturnRoutes.js";
 import buildingProductRoutes from "./routes/buildingProductRoutes.js";
 import constructionPaymentRoutes from "./routes/constructionPaymentRoutes.js";
 import salesAgentRoutes from "./routes/salesAgentRoutes.js";
-
+import brandRoutes from './routes/brandRoutes.js';
+import openingStockRoutes from "./routes/openingStockRoutes.js";
 
 
 
@@ -85,6 +86,8 @@ app.use("/api/purchase-returns", authMiddleware, purchaseReturnRoutes); //Purcha
 app.use("/api/building-products", authMiddleware, buildingProductRoutes); // building-products
 app.use("/api/construction-payments", authMiddleware, constructionPaymentRoutes);
 app.use("/api/sales-agents", authMiddleware, salesAgentRoutes);
+app.use('/api/brands',authMiddleware, brandRoutes);
+app.use("/api/opening-stocks", authMiddleware, openingStockRoutes);
 
 
 // Error handling middleware

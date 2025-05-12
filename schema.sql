@@ -427,7 +427,7 @@ CREATE TABLE purchase_orders (
 );
 
 
--- building_products--
+-- products--
 CREATE TABLE building_products (
   id CHAR(36) PRIMARY KEY DEFAULT (UUID()),
   project_id CHAR(36) NOT NULL,
@@ -478,4 +478,34 @@ CREATE TABLE construction_payments (
   FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE,
   FOREIGN KEY (building_id) REFERENCES buildings(id) ON DELETE CASCADE,
   FOREIGN KEY (client_id) REFERENCES clients(id) ON DELETE CASCADE
+);
+
+--brand--
+CREATE TABLE brands (
+  id CHAR(36) PRIMARY KEY DEFAULT (UUID()),
+  company_id CHAR(36) NOT NULL,
+  product_id CHAR(36) NOT NULL,
+  brand_name VARCHAR(255) NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+
+  FOREIGN KEY (company_id) REFERENCES companies(id) ON DELETE CASCADE,
+  FOREIGN KEY (product_id) REFERENCES building_products(id) ON DELETE CASCADE
+);
+
+CREATE TABLE opening_stocks (
+  id CHAR(36) PRIMARY KEY DEFAULT (UUID()),
+  project_id CHAR(36) NOT NULL,
+  building_id CHAR(36) NOT NULL,
+  product_id CHAR(36) NOT NULL,
+  brand_id CHAR(36) NOT NULL,
+  quantity DECIMAL(10,2) NOT NULL,
+  stock_date DATE NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+
+  FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE,
+  FOREIGN KEY (building_id) REFERENCES buildings(id) ON DELETE CASCADE,
+  FOREIGN KEY (product_id) REFERENCES building_products(id) ON DELETE CASCADE,
+  FOREIGN KEY (brand_id) REFERENCES brands(id) ON DELETE CASCADE
 );
