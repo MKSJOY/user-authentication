@@ -509,3 +509,24 @@ CREATE TABLE opening_stocks (
   FOREIGN KEY (product_id) REFERENCES building_products(id) ON DELETE CASCADE,
   FOREIGN KEY (brand_id) REFERENCES brands(id) ON DELETE CASCADE
 );
+
+CREATE TABLE stock_consumptions (
+    id CHAR(36) PRIMARY KEY DEFAULT (UUID()),
+    consumption_date DATE NOT NULL,
+    project_id CHAR(36) NOT NULL,
+    building_product_id CHAR(36) NOT NULL,
+    building_id CHAR(36),
+    floor_unit_id CHAR(36),
+    brand VARCHAR(100),
+    unit VARCHAR(50),
+    total_quantity INT,
+    consume_quantity INT,
+    note TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+
+    FOREIGN KEY (project_id) REFERENCES projects(id),
+    FOREIGN KEY (building_product_id) REFERENCES building_products(id),
+    FOREIGN KEY (building_id) REFERENCES buildings(id),
+    FOREIGN KEY (floor_unit_id) REFERENCES floor_units(id)
+);

@@ -30,6 +30,7 @@ import constructionPaymentRoutes from "./routes/constructionPaymentRoutes.js";
 import salesAgentRoutes from "./routes/salesAgentRoutes.js";
 import brandRoutes from './routes/brandRoutes.js';
 import openingStockRoutes from "./routes/openingStockRoutes.js";
+import stockConsumptionRoutes from "./routes/stockConsumptionRoutes.js";
 
 
 
@@ -88,6 +89,7 @@ app.use("/api/construction-payments", authMiddleware, constructionPaymentRoutes)
 app.use("/api/sales-agents", authMiddleware, salesAgentRoutes);
 app.use('/api/brands',authMiddleware, brandRoutes);
 app.use("/api/opening-stocks", authMiddleware, openingStockRoutes);
+app.use("/api/stock-consumptions", authMiddleware, stockConsumptionRoutes);
 
 
 // Error handling middleware
