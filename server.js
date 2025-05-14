@@ -31,6 +31,7 @@ import salesAgentRoutes from "./routes/salesAgentRoutes.js";
 import brandRoutes from './routes/brandRoutes.js';
 import openingStockRoutes from "./routes/openingStockRoutes.js";
 import stockConsumptionRoutes from "./routes/stockConsumptionRoutes.js";
+import stockTransferRoutes from "./routes/stockTransferRoutes.js";
 
 
 
@@ -90,7 +91,7 @@ app.use("/api/sales-agents", authMiddleware, salesAgentRoutes);
 app.use('/api/brands',authMiddleware, brandRoutes);
 app.use("/api/opening-stocks", authMiddleware, openingStockRoutes);
 app.use("/api/stock-consumptions", authMiddleware, stockConsumptionRoutes);
-
+app.use("/api/stock-transfers", authMiddleware, stockTransferRoutes);
 
 // Error handling middleware
 app.use(errorHandler);
